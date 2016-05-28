@@ -33,7 +33,7 @@
         android:layout_gravity="center_horizontal">
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:text="Login" />
+        android:layout_height="wrap_content" android:text="Login" android:onClick="startLogin" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:text="Register" android:onClick="startRegister" />
