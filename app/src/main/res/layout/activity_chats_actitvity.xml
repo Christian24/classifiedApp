@@ -8,15 +8,6 @@
     android:paddingRight="4dp"
     tools:context="com.webwemser.classifiedapp.ChatsActitvity">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/chat_scroll">
-
-
-
-    </ScrollView>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,5 +32,12 @@
             android:onClick="startChat"/>
 
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chat_scroll">
+
+    </ScrollView>
 
 </LinearLayout>
