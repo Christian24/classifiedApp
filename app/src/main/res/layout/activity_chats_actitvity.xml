@@ -19,6 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="90"
             android:id="@+id/username"
+            android:singleLine="true"
+            android:lines="1"
+            android:maxLines="1"
             android:hint="Username"/>
 
         <Button
