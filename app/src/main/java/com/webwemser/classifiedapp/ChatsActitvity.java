@@ -23,4 +23,5 @@ public class ChatsActitvity extends AppCompatActivity {
         intent.putExtra(USER,username.getText().toString());
         startActivity(intent);
     }
+    
 }
