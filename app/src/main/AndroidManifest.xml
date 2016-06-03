@@ -20,7 +20,7 @@
             android:name=".RegisterActivity"
             android:parentActivityName=".LoginActivity" />
         <activity android:name=".ChatsActitvity" />
-        <activity android:name=".SendActivity" android:parentActivityName=".ChatsActitvity"></activity>
+        <activity android:name=".SendActivity" android:parentActivityName=".ChatsActitvity"/>
     </application>
 
 </manifest>
