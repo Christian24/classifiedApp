@@ -3,6 +3,7 @@ package com.webwemser.classifiedapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -54,18 +55,18 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
     }
+
     public void register(View view) throws NoSuchAlgorithmException {
         EditText password   = (EditText)findViewById(R.id.password);
         EditText userName = (EditText)findViewById(R.id.username);
         if(!userName.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
-            //Username and Password are present
-
-register(userName.getText().toString(),password.getText().toString());
+        //Username and Password are present
+        register(userName.getText().toString(),password.getText().toString());
         }
     }
+
     protected void register(String userName, String password) throws NoSuchAlgorithmException {
         if(!userName.isEmpty() && !password.isEmpty()) {
-
             SecureRandom random = new SecureRandom();
             //The random bytes
             byte[]   bytes=  random.generateSeed(64);
@@ -86,19 +87,19 @@ register(userName.getText().toString(),password.getText().toString());
             {
                 Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
                 cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-               byte[] private_key_enc= cipher.doFinal(publicKey.getEncoded());
+                byte[] private_key_enc= cipher.doFinal(publicKey.getEncoded());
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
                 params.put("salt_masterkey",bytes.toString());
                 params.put("pubkey_user",publicKey.getEncoded().toString());
-               Base64Encoder encoder = new Base64Encoder();
-              String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
-               params.put("privkey_user_enc",privKeyToSendEnc);
+                Base64Encoder encoder = new Base64Encoder();
+                String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
+                params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
                 JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Helper.URL,json,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Log.i("LOGGING: ", response.toString());
                     }
 
 
@@ -110,25 +111,21 @@ register(userName.getText().toString(),password.getText().toString());
                 });
                 RequestQueue mRequestQueue;
 
-// Instantiate the cache
+                // Instantiate the cache
                 Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
 
-// Set up the network to use HttpURLConnection as the HTTP client.
+                // Set up the network to use HttpURLConnection as the HTTP client.
                 Network network = new BasicNetwork(new HurlStack());
 
-// Instantiate the RequestQueue with the cache and network.
+                // Instantiate the RequestQueue with the cache and network.
                 mRequestQueue = new RequestQueue(cache, network);
 
-// Start the queue
+                // Start the queue
                 mRequestQueue.start();
                 mRequestQueue.add(request);
             }catch (Exception e) {
 
             }
-
-
-
-
         }
     }
 }
