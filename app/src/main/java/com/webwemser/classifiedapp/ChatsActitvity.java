@@ -27,25 +27,12 @@ public class ChatsActitvity extends AppCompatActivity {
         username = (EditText)findViewById(R.id.username);
         scroll = (ScrollView)findViewById(R.id.chat_scroll);
         this.setTitle("Chats");
-
         View.OnClickListener myhandler = new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Klick", Toast.LENGTH_SHORT).show();
             }
         };
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout parent = (LinearLayout) inflater.inflate(R.layout.chat, null);
-
-        for (int i = 0; i < 3; i++) {
-            View custom = inflater.inflate(R.layout.chat_item, null);
-            TextView tv = (TextView) custom.findViewById(R.id.chat_username);
-            tv.setText("Contact " + i);
-            custom.setOnClickListener(myhandler);
-            parent.addView(custom);
-        }
-
-        scroll.addView(parent);
 
 
     }
