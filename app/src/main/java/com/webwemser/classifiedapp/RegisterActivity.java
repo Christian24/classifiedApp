@@ -122,8 +122,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Start the queue
                 mRequestQueue.start();
-                mRequestQueue.add(request);
-                Log.i("LOGGING: ", request.toString());
             }catch (Exception e) {
                 Log.i("LOGGING: ", e.getMessage());
             }
