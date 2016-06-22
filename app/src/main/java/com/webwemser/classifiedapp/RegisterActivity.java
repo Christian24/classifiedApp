@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
         if(!userName.isEmpty() && !password.isEmpty()) {
             SecureRandom random = new SecureRandom();
             //The random bytes
-            byte[]   bytes=  random.generateSeed(64);
+            byte[]   bytes =  random.generateSeed(64);
             byte[] passwordBytes = password.getBytes();
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
