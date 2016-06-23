@@ -6,31 +6,17 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
+import com.webwemser.classifiedapp.requests.RequestSingleton;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.spongycastle.crypto.AsymmetricCipherKeyPair;
-import org.spongycastle.crypto.CipherParameters;
-import org.spongycastle.crypto.KeyGenerationParameters;
 import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.engines.AESEngine;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.spongycastle.crypto.generators.RSAKeyPairGenerator;
-import org.spongycastle.crypto.params.AsymmetricKeyParameter;
 import org.spongycastle.crypto.params.KeyParameter;
-import org.spongycastle.crypto.params.RSAKeyGenerationParameters;
-import org.spongycastle.crypto.tls.EncryptionAlgorithm;
 import org.spongycastle.util.encoders.Base64Encoder;
 
 import java.security.KeyPair;
@@ -40,11 +26,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -81,7 +64,8 @@ register(userName.getText().toString(),password.getText().toString());
             PrivateKey privateKey = keys.getPrivate();
             PublicKey publicKey = keys.getPublic();
             String privateString = keys.getPublic().getEncoded().toString();
-            SecretKeySpec secretKeySpec = new SecretKeySpec(privateKey.getEncoded(),"AES");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
+
             try
             {
                 Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
@@ -102,26 +86,26 @@ register(userName.getText().toString(),password.getText().toString());
                     }
 
 
+
+
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
                     }
-                });
-                RequestQueue mRequestQueue;
+                })
+                {
 
-// Instantiate the cache
-                Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+                    @Override
+                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                        int mStatusCode = response.statusCode;
 
-// Set up the network to use HttpURLConnection as the HTTP client.
-                Network network = new BasicNetwork(new HurlStack());
+                        return super.parseNetworkResponse(response);
+                    }
+                };
 
-// Instantiate the RequestQueue with the cache and network.
-                mRequestQueue = new RequestQueue(cache, network);
-
-// Start the queue
-                mRequestQueue.start();
-                mRequestQueue.add(request);
+              RequestSingleton.getInstance().add(request);
+                
             }catch (Exception e) {
 
             }
