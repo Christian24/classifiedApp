@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    protected void login(String userName, final String password) {
+    protected void login(final String userName, final String password) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.URL + userName, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                     Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
                    instance.setPrivate_key(Helper.getStringFromBytes(cipher.doFinal(instance.getPrivate_key_enc().getBytes())));
-
+                    instance.setLogin(userName);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (NoSuchAlgorithmException e) {
@@ -133,5 +133,5 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-   
+
 }
