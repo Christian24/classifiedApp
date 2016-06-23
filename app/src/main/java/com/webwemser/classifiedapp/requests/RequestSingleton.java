@@ -1,6 +1,7 @@
 package com.webwemser.classifiedapp.requests;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -16,30 +17,29 @@ import com.android.volley.toolbox.HurlStack;
 public class RequestSingleton extends Application {
     private static RequestSingleton instance;
     private RequestQueue queue;
-    private RequestSingleton() {
+    private RequestSingleton(Context context) {
 
         RequestQueue mRequestQueue;
 
-// Instantiate the cache
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+        // Instantiate the cache
+        Cache cache = new DiskBasedCache(context.getCacheDir(), 1024 * 1024); // 1MB cap
 
-// Set up the network to use HttpURLConnection as the HTTP client.
+    // Set up the network to use HttpURLConnection as the HTTP client.
         Network network = new BasicNetwork(new HurlStack());
 
-// Instantiate the RequestQueue with the cache and network.
+    // Instantiate the RequestQueue with the cache and network.
         queue = new RequestQueue(cache, network);
 
-// Start the queue
+    // Start the queue
         queue.start();
 
     }
     public void add(Request request) {
         queue.add(request);
     }
-    public static RequestSingleton getInstance() {
+    public static RequestSingleton getInstance(Context x) {
         if(instance == null)
-            instance = new RequestSingleton();
-
+            instance = new RequestSingleton(x);
         return instance;
     }
 }

@@ -3,6 +3,7 @@ package com.webwemser.classifiedapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -19,6 +20,7 @@ import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.encoders.Base64Encoder;
 
+import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -42,13 +44,11 @@ public class RegisterActivity extends AppCompatActivity {
         EditText userName = (EditText)findViewById(R.id.username);
         if(!userName.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
             //Username and Password are present
-
-register(userName.getText().toString(),password.getText().toString());
+        register(userName.getText().toString(),password.getText().toString());
         }
     }
     protected void register(String userName, String password) throws NoSuchAlgorithmException {
         if(!userName.isEmpty() && !password.isEmpty()) {
-
             SecureRandom random = new SecureRandom();
             //The random bytes
             byte[]   bytes=  random.generateSeed(64);
@@ -56,7 +56,6 @@ register(userName.getText().toString(),password.getText().toString());
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
             byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
-
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
 
@@ -68,34 +67,41 @@ register(userName.getText().toString(),password.getText().toString());
 
             try
             {
-                Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
+                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
                 cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-               byte[] private_key_enc= cipher.doFinal(publicKey.getEncoded());
+                byte[] private_key_enc= cipher.doFinal(publicKey.getEncoded());
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
                 params.put("salt_masterkey",bytes.toString());
                 params.put("pubkey_user",publicKey.getEncoded().toString());
-               Base64Encoder encoder = new Base64Encoder();
-              String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
-               params.put("privkey_user_enc",privKeyToSendEnc);
+                Base64Encoder encoder = new Base64Encoder();
+                String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
+                params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
                 JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Helper.URL,json,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Log.i("Log Response ", response.toString());
                     }
-
-
-
-
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        String body;
+                        //get status code here
+                        String statusCode = String.valueOf(error.networkResponse.statusCode);
+                        //get response body and parse with appropriate encoding
+                        Log.i("Log VolleyError", statusCode);
+                        if(error.networkResponse.data!=null) {
+                            try {
+                                body = new String(error.networkResponse.data,"UTF-8");
+                                Log.i("Log VolleyError", body);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 })
                 {
-
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                         int mStatusCode = response.statusCode;
@@ -104,15 +110,11 @@ register(userName.getText().toString(),password.getText().toString());
                     }
                 };
 
-              RequestSingleton.getInstance().add(request);
+              RequestSingleton.getInstance(getApplicationContext()).add(request);
                 
             }catch (Exception e) {
-
+                Log.i("Log ", e.getMessage());
             }
-
-
-
-
         }
     }
 }
