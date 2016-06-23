@@ -80,7 +80,6 @@ public class RegisterActivity extends AppCompatActivity {
                 params.put("login",userName);
                 params.put("salt_masterkey",bytes.toString());
                 params.put("pubkey_user",publicKey.getEncoded().toString());
-                Base64Encoder encoder = new Base64Encoder();
                 String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
