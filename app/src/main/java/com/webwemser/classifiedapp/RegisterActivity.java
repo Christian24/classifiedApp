@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Helper.URL,json,new Response.Listener<JSONObject>() {
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Helper.URL + userName,json,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("Log Response ", response.toString());
