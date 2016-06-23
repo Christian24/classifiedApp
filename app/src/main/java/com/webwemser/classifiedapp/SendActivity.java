@@ -20,17 +20,10 @@ public class SendActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String username = intent.getStringExtra(ChatsActitvity.USER);
         this.setTitle(username);
-        sendMessage("Hey there!");
         message.setHint("Message to " + username);
     }
 
     public void sendMessage(String message){
-        /*
-        LinearLayout linear = (LinearLayout)findViewById(R.id.layout1);
-        TextView txt = (TextView)findViewById(R.id.textView);
-        txt.setText(message);
-        linear.addView(txt);
-        rel.addView(linear);
-        */
+
     }
 }
