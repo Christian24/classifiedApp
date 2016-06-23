@@ -15,11 +15,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
+import com.webwemser.classifiedapp.singleton.Singleton;
 
 import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.crypto.tls.SignatureAlgorithm;
 import org.spongycastle.util.encoders.Base64Encoder;
 
 import java.io.UnsupportedEncodingException;
@@ -61,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
             byte[] passwordBytes = password.getBytes();
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
-            byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
+            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
 
@@ -70,18 +72,26 @@ public class RegisterActivity extends AppCompatActivity {
             PublicKey publicKey = keys.getPublic();
             String privateString = keys.getPublic().getEncoded().toString();
             SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
-
+            byte[] private_key_enc;
             try
             {
                 Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
                 cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-                byte[] private_key_enc= cipher.doFinal(publicKey.getEncoded());
+                private_key_enc= cipher.doFinal(publicKey.getEncoded());
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
+
                 params.put("salt_masterkey",bytes.toString());
+                Singleton.getSingleton().setSalt_masterkey(bytes.toString());
+
+                Singleton.getSingleton().setLogin(userName);
+
                 params.put("pubkey_user",publicKey.getEncoded().toString());
-                Base64Encoder encoder = new Base64Encoder();
+                Singleton.getSingleton().setPubkey(publicKey.getEncoded().toString());
+
                 String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
+                Singleton.getSingleton().setPrivate_key_enc(Helper.getStringFromBytes(private_key_enc));
+
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
                 JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Helper.URL + userName,json,new Response.Listener<JSONObject>() {
@@ -115,6 +125,9 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.i("Log ParseResponse", response.statusCode+"");
                         int mStatusCode = response.statusCode;
                         if(mStatusCode==201){
+                          Singleton instance = Singleton.getSingleton();
+                            instance.setMasterkey(Helper.getStringFromBytes(masterkey));
+
                             startChatActivity();
                         }
                         return super.parseNetworkResponse(response);
