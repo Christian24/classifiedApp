@@ -1,11 +1,13 @@
 package com.webwemser.classifiedapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -34,22 +36,26 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    public static final String USERNAME = "USERNAME";
+    private EditText password, username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        password   = (EditText)findViewById(R.id.password);
+        username = (EditText)findViewById(R.id.username);
     }
+
     public void register(View view) throws NoSuchAlgorithmException {
-        EditText password   = (EditText)findViewById(R.id.password);
-        EditText userName = (EditText)findViewById(R.id.username);
-        if(!userName.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
+        if(!username.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
             //Username and Password are present
-        register(userName.getText().toString(),password.getText().toString());
+        register(username.getText().toString(),password.getText().toString());
         }
     }
-    protected void register(String userName, String password) throws NoSuchAlgorithmException {
+    protected void register(final String userName, String password) throws NoSuchAlgorithmException {
         if(!userName.isEmpty() && !password.isEmpty()) {
-            SecureRandom random = new SecureRandom();
+            final SecureRandom random = new SecureRandom();
             //The random bytes
             byte[]   bytes=  random.generateSeed(64);
             byte[] passwordBytes = password.getBytes();
@@ -88,15 +94,17 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         String body;
                         //get status code here
-                        String statusCode = String.valueOf(error.networkResponse.statusCode);
-                        //get response body and parse with appropriate encoding
-                        Log.i("Log VolleyError", statusCode);
-                        if(error.networkResponse.data!=null) {
-                            try {
-                                body = new String(error.networkResponse.data,"UTF-8");
-                                Log.i("Log VolleyError", body);
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
+                        if(error.networkResponse!=null){
+                            String statusCode = String.valueOf(error.networkResponse.statusCode);
+                            //get response body and parse with appropriate encoding
+                            Log.i("Log VolleyError", statusCode);
+                            if(error.networkResponse.data!=null) {
+                                try {
+                                    body = new String(error.networkResponse.data,"UTF-8");
+                                    Log.i("Log VolleyError", body);
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -104,8 +112,11 @@ public class RegisterActivity extends AppCompatActivity {
                 {
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                        Log.i("Log ParseResponse", response.statusCode+"");
                         int mStatusCode = response.statusCode;
-
+                        if(mStatusCode==201){
+                            startChatActivity();
+                        }
                         return super.parseNetworkResponse(response);
                     }
                 };
@@ -116,5 +127,17 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.i("Log ", e.getMessage());
             }
         }
+    }
+
+    public void startChatActivity(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Erfolgreich registriert", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterActivity.this, ChatsActitvity.class);
+                intent.putExtra(USERNAME, username.getText().toString());
+                startActivity(intent);
+            }
+        });
     }
 }

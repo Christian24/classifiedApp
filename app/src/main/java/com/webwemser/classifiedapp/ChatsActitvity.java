@@ -24,28 +24,26 @@ public class ChatsActitvity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats_actitvity);
         username = (EditText)findViewById(R.id.username);
-        showChats();
         this.setTitle("Chats");
-        View.OnClickListener myhandler = new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Klick", Toast.LENGTH_SHORT).show();
-            }
-        };
     }
 
     public void startChat(View view) {
-        Intent intent = new Intent(this,SendActivity.class);
-        intent.putExtra(USER,username.getText().toString());
-        startActivity(intent);
+        if(username.getText().toString().length()>0){
+            Intent intent = new Intent(this,SendActivity.class);
+            intent.putExtra(USER,username.getText().toString());
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Bitte Benutzernamen eintragen", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void showChats(){
+    private void showChats(ArrayList<String> names){
         ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < names.size(); i++){
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put(CONTACT, "CHAT "+i);
+            map.put(CONTACT, names.get(i));
             chatList.add(map);
-            Log.i("LOGGING: ", "Chat "+i);
         }
         list = (ListView)findViewById(R.id.list);
         // Getting adapter by passing xml data ArrayList
