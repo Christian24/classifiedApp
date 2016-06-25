@@ -1,5 +1,7 @@
 package com.webwemser.classifiedapp;
 
+import android.util.Base64;
+
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.UnsupportedEncodingException;
@@ -15,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Helper {
     public static final String URL = "https://webengserver.herokuapp.com/";
-    public static String getStringFromBytes(byte[] bytes) {
+    public static String getString(byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8);
     }
    public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -28,6 +30,18 @@ public class Helper {
     }
     public static byte[] getBytes(String string) {
         return string.getBytes(StandardCharsets.UTF_8);
+    }
+    public static String base64Encoding(String input) {
+     return   getString(base64Encoding(getBytes(input)));
+    }
+    public static byte[] base64Encoding(byte[] input) {
+       return Base64.encode(input,Base64.DEFAULT);
+    }
+    public static byte[] base64Decoding(byte[] input) {
+       return Base64.decode(input,Base64.DEFAULT);
+    }
+    public static String base64Decoding(String input) {
+    return getString(base64Decoding(getBytes(input)));
     }
 
 

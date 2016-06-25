@@ -21,8 +21,6 @@ import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.params.KeyParameter;
-import org.spongycastle.crypto.tls.SignatureAlgorithm;
-import org.spongycastle.util.encoders.Base64Encoder;
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
@@ -97,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
                 Singleton.getSingleton().setPubkey(publicKey.getEncoded().toString());
 
                 String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
-                Singleton.getSingleton().setPrivate_key_enc(Helper.getStringFromBytes(private_key_enc));
+                Singleton.getSingleton().setPrivate_key_enc(Helper.getString(private_key_enc));
 
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
@@ -133,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
                         int mStatusCode = response.statusCode;
                         if(mStatusCode==201){
                           Singleton instance = Singleton.getSingleton();
-                            instance.setMasterkey(Helper.getStringFromBytes(masterkey));
+                            instance.setMasterkey(Helper.getString(masterkey));
 
                             startChatActivity();
                         }
