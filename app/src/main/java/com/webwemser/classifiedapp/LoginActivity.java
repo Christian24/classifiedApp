@@ -98,8 +98,8 @@ public class LoginActivity extends AppCompatActivity {
                     instance.setPrivate_key_enc(Helper.getString(privkey));
                     byte[] passwordBytes = password.getBytes();
                     PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
-                    generator.init(passwordBytes, privkey, 10000);
-                    byte[] masterkey = ((KeyParameter) generator.generateDerivedParameters(256)).getKey();
+                    generator.init(passwordBytes,Helper.getBytes(salt_masterkey), 10000);
+                    byte[] masterkey =  ((KeyParameter) generator.generateDerivedParameters(256)).getKey();
                     instance.setMasterkey(Helper.getString(masterkey));
                     String x = new String(masterkey, "UTF-8");
                     Log.i("Masterkey", x);

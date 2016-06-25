@@ -70,6 +70,20 @@ public class Helper {
             sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
         return sb.toString();
     }
+    public static byte[] getRandomBytes(int number) {
+        byte[] bytes = new byte[number];
+        SecureRandom secureRandom = new SecureRandom();
+        for(int i= 0;i< number;i++) {
+        byte[] temp = new byte[1];
+            secureRandom.nextBytes(temp);
+            while(temp[0] < 0) {
+                secureRandom.nextBytes(temp);
+            }
+            bytes[i] = temp[0];
+        }
+        return bytes;
+    }
+
     public static Uri.Builder getUriBuilder() {
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https").authority("webengserver.herokuapp.com");

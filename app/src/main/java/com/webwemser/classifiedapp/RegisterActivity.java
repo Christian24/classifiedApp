@@ -60,11 +60,12 @@ public class RegisterActivity extends AppCompatActivity {
             //final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 
             //The random bytes
-            byte[]   bytes=  Helper.getBytes(Helper.getRandomString(128));
+            byte[]   bytes= Helper.getBytes(Helper.getRandomString(64));
             byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
-            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
+            //CPbkdf2.derive(Helper.getString(bytes),password,10000,256);
+            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey(); //CPbkdf2.derive(Helper.getString(bytes),password,10000,256); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
 
