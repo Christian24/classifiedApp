@@ -1,11 +1,22 @@
 package com.webwemser.classifiedapp;
 
+import android.net.Uri;
 import android.util.Base64;
+import android.util.Log;
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.openssl.PEMWriter;
+import org.spongycastle.openssl.jcajce.JcaPEMWriter;
+import org.spongycastle.util.io.pem.PemObject;
+import org.spongycastle.util.io.pem.PemWriter;
 
+
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -58,6 +69,34 @@ public class Helper {
         for(int i=0;i<sizeOfRandomString;++i)
             sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
         return sb.toString();
+    }
+    public static Uri.Builder getUriBuilder() {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https").authority("webengserver.herokuapp.com");
+        return builder;
+    }
+    public static String getPEMStringFromKey(Key key) {
+        StringWriter pemStrWriter = new StringWriter();
+
+      // PemWriter pemWriter = new PemWriter(pemStrWriter);
+        JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemStrWriter);
+        try {
+
+            //pemWriter.writeObject(keyPair);
+           // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
+jcaPEMWriter.writeObject(key);
+            jcaPEMWriter.close();
+          //  pemWriter.flush();
+           // pemWriter.close();
+
+        } catch (IOException e) {
+            Log.i("Caught exception:" , e.getMessage());
+
+
+            return "";
+        }
+
+        return pemStrWriter.toString();
     }
 
 

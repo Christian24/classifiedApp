@@ -1,6 +1,7 @@
 package com.webwemser.classifiedapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.params.KeyParameter;
+
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
@@ -92,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 Singleton.getSingleton().setLogin(userName);
 
-                params.put("pubkey_user",Helper.getString(publicKey.getEncoded()));
+                params.put("pubkey_user",Helper.getPEMStringFromKey(publicKey));
 
                 Singleton.getSingleton().setPubkey(Helper.getString(publicKey.getEncoded()));
 
@@ -101,7 +103,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Helper.URL + userName,json,new Response.Listener<JSONObject>() {
+               Uri url = Helper.getUriBuilder().appendPath(userName).build();
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url.toString(),json,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("Log Response ", response.toString());
