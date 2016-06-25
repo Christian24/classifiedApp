@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
+import java.security.SecureRandom;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -18,7 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Helper {
     public static final String URL = "https://webengserver.herokuapp.com/";
     public static String getString(byte[] bytes) {
-        return new String(bytes, StandardCharsets.UTF_8);
+        return new String(bytes,StandardCharsets.UTF_8);
     }
    public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         Provider provider = new BouncyCastleProvider();
@@ -42,6 +43,21 @@ public class Helper {
     }
     public static String base64Decoding(String input) {
     return getString(base64Decoding(getBytes(input)));
+    }
+    private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
+
+    /**
+     * Adapted from http://stackoverflow.com/questions/12116092/android-random-string-generator
+     * @param sizeOfRandomString
+     * @return
+     */
+    public static String getRandomString(final int sizeOfRandomString)
+    {
+        final SecureRandom random=new SecureRandom();
+        final StringBuilder sb=new StringBuilder(sizeOfRandomString);
+        for(int i=0;i<sizeOfRandomString;++i)
+            sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
+        return sb.toString();
     }
 
 

@@ -55,9 +55,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
     protected void register(final String userName, String password) throws NoSuchAlgorithmException {
         if(!userName.isEmpty() && !password.isEmpty()) {
-            final SecureRandom random = new SecureRandom();
+            //final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+
             //The random bytes
-            byte[]   bytes=  random.generateSeed(64);
+            byte[]   bytes=  Helper.getBytes(Helper.getRandomString(64));
             byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
@@ -85,7 +86,8 @@ public class RegisterActivity extends AppCompatActivity {
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
-                params.put("salt_masterkey",bytes.toString());
+                params.put("salt_masterkey",Helper.getString(bytes));
+                String salt_masterkey =  Helper.getString(bytes);
                 Singleton.getSingleton().setSalt_masterkey(Helper.getString(bytes));
 
                 Singleton.getSingleton().setLogin(userName);
