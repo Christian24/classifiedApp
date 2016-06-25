@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
             final SecureRandom random = new SecureRandom();
             //The random bytes
             byte[]   bytes=  random.generateSeed(64);
-            byte[] passwordBytes = password.getBytes();
+            byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
             final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
@@ -85,8 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
-                params.put("salt_masterkey",bytes.toString());
-                Singleton.getSingleton().setSalt_masterkey(bytes.toString());
+                params.put("salt_masterkey",Helper.getString(bytes));
+                Singleton.getSingleton().setSalt_masterkey(Helper.getString(bytes));
 
                 Singleton.getSingleton().setLogin(userName);
 
@@ -94,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 Singleton.getSingleton().setPubkey(publicKey.getEncoded().toString());
 
-                String privKeyToSendEnc=  Base64.encodeToString(private_key_enc,Base64.DEFAULT);
+                String privKeyToSendEnc= Helper.getString( Helper.base64Encoding(private_key_enc));
                 Singleton.getSingleton().setPrivate_key_enc(Helper.getString(private_key_enc));
 
                 params.put("privkey_user_enc",privKeyToSendEnc);
