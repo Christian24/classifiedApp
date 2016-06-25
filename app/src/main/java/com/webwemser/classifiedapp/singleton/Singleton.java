@@ -71,4 +71,5 @@ private static Singleton singleton;
             singleton = new Singleton();
         return singleton;
     }
+
 }

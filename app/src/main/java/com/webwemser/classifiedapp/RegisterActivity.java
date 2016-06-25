@@ -71,7 +71,13 @@ public class RegisterActivity extends AppCompatActivity {
             PrivateKey privateKey = keys.getPrivate();
             PublicKey publicKey = keys.getPublic();
             String privateString = keys.getPublic().getEncoded().toString();
-            SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
+           // SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
+            SecretKeySpec secretKeySpec = null;
+            try {
+                secretKeySpec = Helper.buildKey(masterkey);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             byte[] private_key_enc;
             try
             {

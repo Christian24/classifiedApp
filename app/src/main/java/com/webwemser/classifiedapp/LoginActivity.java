@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                     instance.setMasterkey(Helper.getStringFromBytes(masterkey));
                     String x = new String(masterkey, "UTF-8");
                     Log.i("Masterkey", x);
-                    SecretKeySpec secretKeySpec = buildKey(instance.getMasterkey().getBytes());
+                    SecretKeySpec secretKeySpec = Helper.buildKey(instance.getMasterkey().getBytes());
                     //SecretKeySpec secretKeySpec = new SecretKeySpec(instance.getMasterkey().getBytes(), "AES");
                     Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
@@ -136,14 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestSingleton.getInstance(getApplicationContext()).add(request);
     }
 
-    private SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        Provider provider = new BouncyCastleProvider();
-        MessageDigest digester = MessageDigest.getInstance("SHA-256", provider);
-        digester.update(String.valueOf(password).getBytes("UTF-8"));
-        byte[] key = digester.digest();
-        SecretKeySpec spec = new SecretKeySpec(key, "AES");
-        return spec;
-    }
+
 
 
 
