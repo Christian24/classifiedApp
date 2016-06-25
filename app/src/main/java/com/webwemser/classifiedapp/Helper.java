@@ -26,6 +26,9 @@ public class Helper {
         SecretKeySpec spec = new SecretKeySpec(key, "AES");
         return spec;
     }
+    public static byte[] getBytes(String string) {
+        return string.getBytes(StandardCharsets.UTF_8);
+    }
 
 
 }
