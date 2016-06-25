@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
             //final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 
             //The random bytes
-            byte[]   bytes=  Helper.getBytes(Helper.getRandomString(64));
+            byte[]   bytes=  Helper.getBytes(Helper.getRandomString(128));
             byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
