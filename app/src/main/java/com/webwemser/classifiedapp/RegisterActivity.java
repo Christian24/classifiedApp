@@ -25,15 +25,19 @@ import org.spongycastle.crypto.params.KeyParameter;
 
 
 import java.io.UnsupportedEncodingException;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -49,23 +53,28 @@ public class RegisterActivity extends AppCompatActivity {
         username = (EditText)findViewById(R.id.username);
     }
 
-    public void register(View view) throws NoSuchAlgorithmException {
+    public void register(View view) throws NoSuchAlgorithmException, InvalidKeySpecException {
         if(!username.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
             //Username and Password are present
         register(username.getText().toString(),password.getText().toString());
         }
     }
-    protected void register(final String userName, String password) throws NoSuchAlgorithmException {
+    protected void register(final String userName, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         if(!userName.isEmpty() && !password.isEmpty()) {
             //final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 
             //The random bytes
             byte[]   bytes= Helper.getBytes(Helper.getRandomString(64));
+            Log.i("Salt_masterkey_Register",Helper.getString(bytes));
             byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
             //CPbkdf2.derive(Helper.getString(bytes),password,10000,256);
-            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey(); //CPbkdf2.derive(Helper.getString(bytes),password,10000,256); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
+            PBEKeySpec spec = new PBEKeySpec(password.toCharArray(),bytes, 10000, 256);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            Key key = skf.generateSecret(spec);
+
+            final byte[] masterkey = key.getEncoded(); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey(); //CPbkdf2.derive(Helper.getString(bytes),password,10000,256); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
 
@@ -84,8 +93,8 @@ public class RegisterActivity extends AppCompatActivity {
             try
             {
                 Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-                cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-                private_key_enc= cipher.doFinal(publicKey.getEncoded());
+                cipher.init(Cipher.WRAP_MODE,key);
+                private_key_enc= cipher.wrap(publicKey);
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
