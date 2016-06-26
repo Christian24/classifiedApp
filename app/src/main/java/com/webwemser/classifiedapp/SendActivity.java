@@ -23,6 +23,10 @@ public class SendActivity extends AppCompatActivity {
         message.setHint("Message to " + username);
     }
 
+    public void sendMessage(EditText message) {
+        String number = Helper.getRandomString(64);
+    }
+
     public void sendMessage(String message){
 
     }
