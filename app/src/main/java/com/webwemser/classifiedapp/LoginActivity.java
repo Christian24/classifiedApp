@@ -115,11 +115,11 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("Masterkey", x);
                     SecretKeySpec secretKeySpec = Helper.buildKey(instance.getMasterkey().getBytes());
                     //SecretKeySpec secretKeySpec = new SecretKeySpec(instance.getMasterkey().getBytes(), "AES");
-                    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-                    cipher.init(Cipher.UNWRAP_MODE, key);
+                    Cipher cipher = Cipher.getInstance("AES");
+                    cipher.init(Cipher.DECRYPT_MODE, key);
 
                     //instance.setPrivate_key(Helper.getString(cipher.doFinal(instance.getPrivate_key_enc().getBytes())));
-                   instance.setPrivate_key(Helper.getString(cipher.unwrap(instance.getPrivate_key_enc().getBytes(),"AES/ECB/PKCS5Padding",Cipher.PRIVATE_KEY).getEncoded()));
+                   instance.setPrivate_key(Helper.getString(cipher.doFinal(privkey)));
                     instance.setLogin(userName);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -136,6 +136,10 @@ public class LoginActivity extends AppCompatActivity {
                 }*/ catch (UnsupportedEncodingException e){
                     e.printStackTrace();
                 } catch (InvalidKeySpecException e) {
+                    e.printStackTrace();
+                } catch (BadPaddingException e) {
+                    e.printStackTrace();
+                } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
                 }
 
