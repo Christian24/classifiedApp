@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.Helper;
+import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
 import org.json.JSONObject;
@@ -67,11 +68,12 @@ public class GetLastMessageRequest {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 Log.i("Log ParseResponse", response.statusCode+"");
+                Response<JSONObject> json = super.parseNetworkResponse(response);
                 int mStatusCode = response.statusCode;
                 if(mStatusCode==200){
-
+                    Message.getInstance().addMessage(json.result);
                 }
-                return super.parseNetworkResponse(response);
+                return json;
             }
         };
 
