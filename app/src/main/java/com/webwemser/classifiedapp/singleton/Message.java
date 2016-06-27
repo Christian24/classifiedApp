@@ -19,6 +19,11 @@ import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.PublicKey;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 /**
  * Created by Christian on 27.06.2016.
  */
@@ -32,11 +37,11 @@ private static Message instance;
     }
     public void addMessage(Context context,JSONObject json) throws JSONException {
         int timestamp = json.getInt("timestamp");
-        String sender = json.getString("sender");
-        String cipher = Helper.base64Encoding(json.getString("content_enc"));
-        String iv = json.getString("iv");
-        String key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
-        String sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
+        final String sender = json.getString("sender");
+        final String content_enc = Helper.base64Encoding(json.getString("content_enc"));
+        final String iv = json.getString("iv");
+        final String key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
+        final String sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
         String sig_service = Helper.base64Decoding(json.getString("sig_service"));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.getUriBuilder().appendPath(sender).appendPath("pubkey").toString(), null, new Response.Listener<JSONObject>() {
             @Override
@@ -72,7 +77,17 @@ private static Message instance;
                     Log.i("Pubkey_User", pubkey_user);
                     if (mStatusCode==200){
                       Key key= Helper.getKeyFromPEM( pubkey_user);
-
+                      byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(key_recipient_enc));
+                    if(Helper.getBytes(sig_recipient) == new_sig_recipient) {
+                        //Match
+                      Cipher rsa = Cipher.getInstance("RSA");
+                        rsa.init(Cipher.DECRYPT_MODE,key);
+                       byte[] key_recipient = rsa.doFinal(Helper.getBytes(key_recipient_enc));
+                        Cipher cipher = Cipher.getInstance("AES/CBC/NOPADDING");
+                        SecretKey aesKey = new SecretKeySpec(key_recipient, "AES");
+                        cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(Helper.getBytes(iv)));
+                      byte[] message =  cipher.doFinal(Helper.getBytes(content_enc));
+                    }
                     }
                 }
                 catch (Exception e){
