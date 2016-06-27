@@ -77,7 +77,7 @@ private static Message instance;
                     Log.i("Pubkey_User", pubkey_user);
                     if (mStatusCode==200){
                       Key key= Helper.getKeyFromPEM( pubkey_user);
-                      byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(key_recipient_enc));
+                      byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(iv),Helper.getBytes(key_recipient_enc));
                     if(Helper.getBytes(sig_recipient) == new_sig_recipient) {
                         //Match
                       Cipher rsa = Cipher.getInstance("RSA");
