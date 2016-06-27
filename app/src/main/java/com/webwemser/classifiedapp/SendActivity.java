@@ -21,6 +21,7 @@ import java.util.List;
 public class SendActivity extends AppCompatActivity {
 
     public static final String SENDER = "SENDER", MESSAGE = "MESSAGE";
+    private String username;
     private EditText message;
     private MyChatAdapter adapter;
     private ListView list;
@@ -31,7 +32,7 @@ public class SendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send);
         message = (EditText)findViewById(R.id.message);
         Intent intent = getIntent();
-        String username = intent.getStringExtra(ChatsActivity.USER);
+        username = intent.getStringExtra(ChatsActivity.USER);
         this.setTitle(username);
         message.setHint("Message to " + username);
         showChats();
@@ -44,8 +45,9 @@ public class SendActivity extends AppCompatActivity {
     	String content = message.getText().toString();
 
 
-        params.put("sender","senderMock");
-        params.put("content_enc","content_encMock");
+        params.put("sender", username);
+        //not base64 encoded yet
+        params.put("content_enc","content");
         params.put("key_recipient_enc","key_recipient_encMock");
         params.put("sig_recipient","sig_recipientMock");
         params.put("sender","senderMock");
