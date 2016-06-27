@@ -66,8 +66,12 @@ public class SendActivity extends AppCompatActivity {
             Cipher rsa = Cipher.getInstance("RSA");
             rsa.init(Cipher.ENCRYPT_MODE,pubkey);
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
-            byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),username,message_enc,iv,key_recipient_enc);
-
+            String timestamp = Integer.toString( Helper.getTimestamp());
+            byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),Singleton.getSingleton().getLogin(),message_enc,iv,key_recipient_enc);
+            byte[] sig_service = Helper.generateSig_service(Singleton.getSingleton().getPrivate_key(),
+                    Singleton.getSingleton().getLogin(),message_enc,
+                    iv,key_recipient_enc,digital_signature,Helper.getBytes(timestamp),Helper.getBytes(username));
+            
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
 
