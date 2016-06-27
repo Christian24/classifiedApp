@@ -7,6 +7,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Button;
+
+import com.webwemser.classifiedapp.singleton.Singleton;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class SendActivity extends AppCompatActivity {
 
@@ -24,7 +31,22 @@ public class SendActivity extends AppCompatActivity {
     }
 
     public void sendMessage(EditText message) {
-        String number = Helper.getRandomString(64);
+
+        HashMap<String,String> params = new HashMap<String,String>();
+    	String number = Helper.getRandomString(64);
+    	String content = message.getText().toString();
+
+
+        params.put("sender","senderMock");
+        params.put("content_enc","content_encMock");
+        params.put("key_recipient_enc","key_recipient_encMock");
+        params.put("sig_recipient","sig_recipientMock");
+        params.put("sender","senderMock");
+
+    	Button sendButton = (Button)findViewById(R.id.send);
+        Singleton singletonInstance = Singleton.getSingleton();
+
+        JSONObject json = new JSONObject(params);
     }
 
     public void sendMessage(String message){

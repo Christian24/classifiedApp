@@ -26,6 +26,13 @@
 
     </ScrollView>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="send"
+        android:id="@+id/send"
+        android:layout_gravity="right" />
+
     <include
         layout="@layout/type_message_area"
         android:layout_width="match_parent"
