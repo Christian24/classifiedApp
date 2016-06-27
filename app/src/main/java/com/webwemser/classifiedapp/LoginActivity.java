@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
                     Singleton instance = Singleton.getSingleton();
-                    String salt_masterkey = json.result.getString("salt_masterkey");
+                    String salt_masterkey = Helper.base64Decoding( json.result.getString("salt_masterkey"));
                     Log.i("Salt_Masterkey", salt_masterkey);
                     instance.setSalt_masterkey(Helper.getBytes(salt_masterkey));
 

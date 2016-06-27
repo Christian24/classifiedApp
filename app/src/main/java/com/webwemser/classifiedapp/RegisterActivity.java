@@ -92,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
-                params.put("salt_masterkey",Helper.getString(bytes));
+                params.put("salt_masterkey",Helper.getString(Helper.base64Encoding(bytes)));
 
                 Singleton.getSingleton().setSalt_masterkey(bytes);
 
