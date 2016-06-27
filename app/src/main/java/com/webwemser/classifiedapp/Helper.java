@@ -35,7 +35,7 @@ public class Helper {
    public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         Provider provider = new BouncyCastleProvider();
         MessageDigest digester = MessageDigest.getInstance("SHA-256", provider);
-        digester.update(String.valueOf(password).getBytes("UTF-8"));
+        digester.update(password);
         byte[] key = digester.digest();
         SecretKeySpec spec = new SecretKeySpec(key, "AES");
         return spec;

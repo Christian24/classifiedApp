@@ -7,9 +7,9 @@ import android.app.Application;
  */
 public class Singleton extends Application {
 private static Singleton singleton;
-    protected String pubkey;
-    protected String masterkey;
-    protected String salt_masterkey;
+    protected byte[] pubkey;
+    protected byte[] masterkey;
+    protected byte[] salt_masterkey;
     protected String login;
 
     public String getLogin() {
@@ -20,46 +20,46 @@ private static Singleton singleton;
         this.login = login;
     }
 
-    public String getSalt_masterkey() {
+    public byte[] getSalt_masterkey() {
         return salt_masterkey;
     }
 
-    public void setSalt_masterkey(String salt_masterkey) {
+    public void setSalt_masterkey(byte[] salt_masterkey) {
         this.salt_masterkey = salt_masterkey;
     }
 
-    protected String private_key_enc;
-    protected String private_key;
+    protected byte[] private_key_enc;
+    protected byte[] private_key;
 
-    public String getPubkey() {
+    public byte[] getPubkey() {
         return pubkey;
     }
 
-    public void setPubkey(String pubkey) {
+    public void setPubkey(byte[] pubkey) {
         this.pubkey = pubkey;
     }
 
-    public String getMasterkey() {
+    public byte[] getMasterkey() {
         return masterkey;
     }
 
-    public void setMasterkey(String masterkey) {
+    public void setMasterkey(byte[] masterkey) {
         this.masterkey = masterkey;
     }
 
-    public String getPrivate_key_enc() {
+    public byte[] getPrivate_key_enc() {
         return private_key_enc;
     }
 
-    public void setPrivate_key_enc(String private_key_enc) {
+    public void setPrivate_key_enc(byte[] private_key_enc) {
         this.private_key_enc = private_key_enc;
     }
 
-    public String getPrivate_key() {
+    public byte[] getPrivate_key() {
         return private_key;
     }
 
-    public void setPrivate_key(String private_key) {
+    public void setPrivate_key(byte[] private_key) {
         this.private_key = private_key;
     }
 
