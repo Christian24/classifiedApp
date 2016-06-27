@@ -86,6 +86,7 @@ public class ChatsActivity extends AppCompatActivity {
     }
 
     protected void login(final String userName) {
+        Log.i("URL", Helper.URL + userName + "/pubkey");
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.URL + userName + "/pubkey", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -118,7 +119,7 @@ public class ChatsActivity extends AppCompatActivity {
                 try {
                     pubkey_user = json.result.getString("pubkey_user");
                     Log.i("Pubkey_User", pubkey_user);
-                    if (mStatusCode==200){
+                    if (mStatusCode==200 || mStatusCode==304){
                         startChatActivity(pubkey_user);
                     }
                 }

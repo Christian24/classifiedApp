@@ -6,6 +6,7 @@ package com.webwemser.classifiedapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,15 +49,13 @@ public class MyChatAdapter extends BaseAdapter {
         meet = data.get(position);
 
         TextView message;
-
+        Log.i("SENDER", meet.get(SendActivity.SENDER));
         if(meet.get(SendActivity.SENDER).equals("Self")){
-            if(convertView==null)
-                vi = inflater.inflate(R.layout.message_sent, null);
+            vi = inflater.inflate(R.layout.message_sent, null);
             message = (TextView)vi.findViewById(R.id.textSent);
         }
         else {
-            if(convertView==null)
-                vi = inflater.inflate(R.layout.message_received, null);
+            vi = inflater.inflate(R.layout.message_received, null);
             message = (TextView)vi.findViewById(R.id.textReceived);
         }
         // Setting all values in listview

@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
                 }
-                if(mStatusCode==200){
+                if(mStatusCode==200 || mStatusCode==304){
                     startChatActivity();
                 }
                 return json;
