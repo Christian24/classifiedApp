@@ -103,16 +103,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                 params.put("salt_masterkey",Helper.getString(bytes));
                 String salt_masterkey =  Helper.getString(bytes);
-                Singleton.getSingleton().setSalt_masterkey(Helper.getString(bytes));
+                Singleton.getSingleton().setSalt_masterkey(bytes);
 
                 Singleton.getSingleton().setLogin(userName);
 
                 params.put("pubkey_user",Helper.getPEMStringFromKey(publicKey));
 
-                Singleton.getSingleton().setPubkey(Helper.getString(publicKey.getEncoded()));
+                Singleton.getSingleton().setPubkey(publicKey.getEncoded());
 
                 String privKeyToSendEnc= Helper.getString( Helper.base64Encoding(private_key_enc));
-                Singleton.getSingleton().setPrivate_key_enc(Helper.getString(private_key_enc));
+                Singleton.getSingleton().setPrivate_key_enc(private_key_enc);
 
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
@@ -149,7 +149,7 @@ public class RegisterActivity extends AppCompatActivity {
                         int mStatusCode = response.statusCode;
                         if(mStatusCode==201){
                           Singleton instance = Singleton.getSingleton();
-                            instance.setMasterkey(Helper.getString(masterkey));
+                            instance.setMasterkey(masterkey);
 
                             startChatActivity();
                         }

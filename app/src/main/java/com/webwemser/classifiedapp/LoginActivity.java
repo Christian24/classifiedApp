@@ -23,16 +23,15 @@ import org.spongycastle.crypto.params.KeyParameter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 
-import java.security.Key;
+
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
+
 import javax.crypto.spec.SecretKeySpec;
 
 public class LoginActivity extends AppCompatActivity {
@@ -92,14 +91,14 @@ public class LoginActivity extends AppCompatActivity {
                     Singleton instance = Singleton.getSingleton();
                     String salt_masterkey = json.result.getString("salt_masterkey");
                     Log.i("Salt_Masterkey", salt_masterkey);
-                    instance.setSalt_masterkey(salt_masterkey);
+                    instance.setSalt_masterkey(Helper.getBytes(salt_masterkey));
 
                     String pubkey_user = json.result.getString("pubkey_user");
-                    instance.setPubkey(pubkey_user);
+                    instance.setPubkey(Helper.getBytes(pubkey_user));
                     Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
                     byte[] privkey = Base64.decode(privkey_user_enc, Base64.DEFAULT);
-                    instance.setPrivate_key_enc(Helper.getString(privkey));
+                    instance.setPrivate_key_enc(privkey);
                     byte[] passwordBytes = password.getBytes();
                     PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
                     generator.init(passwordBytes,Helper.getBytes(salt_masterkey), 10000);
@@ -120,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
                     //instance.setPrivate_key(Helper.getString(cipher.doFinal(instance.getPrivate_key_enc().getBytes())));
-                   instance.setPrivate_key(Helper.getString(cipher.doFinal(privkey)));
+                   instance.setPrivate_key(cipher.doFinal(privkey));
                     instance.setLogin(userName);
                 } catch (JSONException e) {
                     e.printStackTrace();
