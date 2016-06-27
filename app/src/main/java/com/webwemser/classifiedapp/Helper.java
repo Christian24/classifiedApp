@@ -142,6 +142,13 @@ public class Helper {
         long unixTime = System.currentTimeMillis() / 1000L;
         return (int)unixTime;
     }
+    public static byte[] generateSig_recipient(Key key, String identity,byte[] cipher, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update(key.getEncoded());
+        digest.update(Helper.getBytes(identity));
+        digest.update(cipher);
+       return digest.digest(key_recipient_enc);
+    }
 
 
 }
