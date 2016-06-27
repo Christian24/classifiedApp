@@ -2,6 +2,9 @@ package com.webwemser.classifiedapp.singleton;
 
 import android.app.Application;
 
+import com.webwemser.classifiedapp.Helper;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -15,7 +18,15 @@ private static Message instance;
     instance = new Message();
         return instance;
     }
-    public void addMessage(JSONObject json) {
+    public void addMessage(JSONObject json) throws JSONException {
+        int timestamp = json.getInt("timestamp");
+        String sender = json.getString("sender");
+        String cipher = Helper.base64Encoding(json.getString("content_enc"));
+        String iv = json.getString("iv");
+        String key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
+        String sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
+        String sig_service = Helper.base64Decoding(json.getString("sig_service"));
+
 
     }
 }

@@ -13,6 +13,7 @@ import com.webwemser.classifiedapp.Helper;
 import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
 
@@ -71,7 +72,11 @@ public class GetLastMessageRequest {
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 int mStatusCode = response.statusCode;
                 if(mStatusCode==200){
-                    Message.getInstance().addMessage(json.result);
+                    try {
+                        Message.getInstance().addMessage(json.result);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return json;
             }
