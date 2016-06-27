@@ -27,7 +27,7 @@ import java.util.HashMap;
  */
 public class GetLastMessageRequest {
 
-    public void start(Context context) throws NoSuchAlgorithmException {
+    public void start(final Context context) throws NoSuchAlgorithmException {
         String login = Singleton.getSingleton().getLogin();
         int timestamp = Helper.getTimestamp();
        MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -73,7 +73,7 @@ public class GetLastMessageRequest {
                 int mStatusCode = response.statusCode;
                 if(mStatusCode==200){
                     try {
-                        Message.getInstance().addMessage(json.result);
+                        Message.getInstance().addMessage(context,json.result);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
