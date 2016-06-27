@@ -29,6 +29,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 
@@ -56,10 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
     protected void register(final String userName, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         if(!userName.isEmpty() && !password.isEmpty()) {
-            //final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            final SecureRandom random = new SecureRandom();
 
             //The random bytes
-            byte[]   bytes= Helper.getBytes(Helper.getRandomString(64));
+            byte[]   bytes= random.generateSeed(64); //Helper.getBytes(Helper.getRandomString(64));
             Log.i("Salt_masterkey_Register",Helper.getString(bytes));
             byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
@@ -92,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
-                params.put("salt_masterkey",Helper.getString(bytes));
+                params.put("salt_masterkey",Helper.getString(Helper.base64Encoding(bytes)));
 
                 Singleton.getSingleton().setSalt_masterkey(bytes);
 

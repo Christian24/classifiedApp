@@ -4,15 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,23 +14,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
-
 import org.json.JSONObject;
-import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.pqc.math.ntru.polynomial.Constants;
-
 import java.io.UnsupportedEncodingException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -71,9 +53,6 @@ public class SendActivity extends AppCompatActivity {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
 
             byte[] results = cipher.doFinal(message.getBytes());
-
-            String result = Base64.encodeToString(results, Base64.NO_WRAP|Base64.DEFAULT);
-
 
 
 
