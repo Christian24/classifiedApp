@@ -4,14 +4,17 @@ import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
+import org.spongycastle.crypto.util.PublicKeyFactory;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.openssl.PEMWriter;
 import org.spongycastle.openssl.jcajce.JcaPEMWriter;
 import org.spongycastle.util.io.pem.PemObject;
+import org.spongycastle.util.io.pem.PemReader;
 import org.spongycastle.util.io.pem.PemWriter;
 
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -109,6 +112,30 @@ public class Helper {
         }
 
         return pemStrWriter.toString();
+    }
+    public static Key getKeyFromPEM(String key) {
+        StringWriter pemStrWriter = new StringWriter();
+        StringReader stringReader = new StringReader(key);
+        // PemWriter pemWriter = new PemWriter(pemStrWriter);
+        PemReader pemReader = new PemReader(stringReader);
+
+        try {
+
+            //pemWriter.writeObject(keyPair);
+            // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
+          PemObject obj = pemReader.readPemObject();
+            pemReader.close();
+
+            return  new SecretKeySpec(obj.getContent(), 0, obj.getContent().length, "RSA");
+            //  pemWriter.flush();
+            // pemWriter.close();
+
+        } catch (IOException e) {
+            Log.i("Caught exception:" , e.getMessage());
+            return null;
+        }
+
+
     }
 
 
