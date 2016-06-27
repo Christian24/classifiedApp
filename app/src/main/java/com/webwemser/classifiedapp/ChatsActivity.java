@@ -54,11 +54,11 @@ public class ChatsActivity extends AppCompatActivity {
     }
 
     public void startChat(View view) {
-        if(username.getText().toString().length()>0){
+        if(username.getText().toString().length()>0 && !(username.getText().toString().equals(Singleton.getSingleton().getLogin()))){
             login(username.getText().toString());
         }
         else{
-            Toast.makeText(getApplicationContext(), "Bitte Benutzernamen eintragen", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Bitte richtigen Benutzernamen eintragen", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -43,13 +43,9 @@ public class MyChatAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View vi = convertView;
-
-
         HashMap<String, String> meet;
         meet = data.get(position);
-
         TextView message;
-        Log.i("SENDER", meet.get(SendActivity.SENDER));
         if(meet.get(SendActivity.SENDER).equals("Self")){
             vi = inflater.inflate(R.layout.message_sent, null);
             message = (TextView)vi.findViewById(R.id.textSent);

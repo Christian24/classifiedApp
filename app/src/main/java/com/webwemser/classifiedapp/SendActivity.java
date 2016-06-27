@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.android.volley.NetworkResponse;
@@ -45,23 +46,26 @@ public class SendActivity extends AppCompatActivity {
         showChats();
     }
 
-    public void sendMessage(String message){
+    public void send(View v){
+        String m = message.getText().toString();
+        if(m.length()>0){
+            sendMessage(m);
+        }
+    }
+
+    private void sendMessage(String message){
         try{
             SecureRandom random = new SecureRandom();
 
             Cipher cipher = Cipher.getInstance("AES/CBC/NOPADDING");
             byte[] key_recipient = random.generateSeed(16);
             byte[] iv = random.generateSeed(16);
-
-
             SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-
             byte[] message_enc = cipher.doFinal(Helper.getBytes(message));
-
             Intent intent = getIntent();
-            String pubkey_string= intent.getStringExtra(ChatsActivity.PUBKEY);
+            String pubkey_string = intent.getStringExtra(ChatsActivity.PUBKEY);
             Key pubkey = Helper.getKeyFromPEM(pubkey_string);
             Cipher rsa = Cipher.getInstance("RSA");
             rsa.init(Cipher.ENCRYPT_MODE,pubkey);
@@ -71,23 +75,15 @@ public class SendActivity extends AppCompatActivity {
             byte[] sig_service = Helper.generateSig_service(Singleton.getSingleton().getPrivate_key(),
                     Singleton.getSingleton().getLogin(),message_enc,
                     iv,key_recipient_enc,digital_signature,Helper.getBytes(timestamp),Helper.getBytes(username));
-            
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
-
-            params.put("content_enc", "");
-
-            params.put("key_recipient_enc", "");
-
-            params.put("sig_recipient", "");
-
+            params.put("content_enc", Helper.base64Encoding( Helper.getString(message_enc)));
+            params.put("key_recipient_enc", Helper.base64Encoding(Helper.getString(key_recipient_enc)));
+            params.put("iv", Helper.base64Encoding(Helper.getString(iv)) );
+            params.put("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
             params.put("timestamp", Integer.toString(Helper.getTimestamp()));
-
-            params.put("sig_service", "");
-
+            params.put("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
             params.put("recipitent", username);
-
-
 
             JSONObject json = new JSONObject(params);
             Uri url = Helper.getUriBuilder().appendPath(username).appendPath("message").build();
