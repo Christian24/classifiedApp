@@ -54,7 +54,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-
+@Deprecated
 public class CPbkdf2
 {
     /* START RFC 2898 IMPLEMENTATION */

@@ -64,12 +64,9 @@ public class RegisterActivity extends AppCompatActivity {
             byte[] passwordBytes = Helper.getBytes(password);
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
-            //CPbkdf2.derive(Helper.getString(bytes),password,10000,256);
-            /*PBEKeySpec spec = new PBEKeySpec(password.toCharArray(),bytes, 10000, 256);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            Key key = skf.generateSecret(spec);
-*/
-            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey(); //CPbkdf2.derive(Helper.getString(bytes),password,10000,256); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
+
+
+            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
 
@@ -77,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
             PrivateKey privateKey = keys.getPrivate();
             PublicKey publicKey = keys.getPublic();
             String privateString = keys.getPublic().getEncoded().toString();
-            // SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
+
             SecretKeySpec secretKeySpec = null;
             try {
                 secretKeySpec = Helper.buildKey(masterkey);
@@ -90,14 +87,13 @@ public class RegisterActivity extends AppCompatActivity {
                 Cipher cipher = Cipher.getInstance("AES");
                 cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
                 private_key_enc= cipher.doFinal(privateKey.getEncoded());
-                // Cipher cipher = Cipher.getInstance("AES");
-                //cipher.init(Cipher.ENCRYPT_MODE,key);
-                //private_key_enc= cipher.doFinal(publicKey.getEncoded());
+
+
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
                 params.put("salt_masterkey",Helper.getString(bytes));
-                String salt_masterkey =  Helper.getString(bytes);
+
                 Singleton.getSingleton().setSalt_masterkey(bytes);
 
                 Singleton.getSingleton().setLogin(userName);

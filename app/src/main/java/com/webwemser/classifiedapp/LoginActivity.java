@@ -106,21 +106,15 @@ public class LoginActivity extends AppCompatActivity {
                     generator.init(passwordBytes,Helper.getBytes(salt_masterkey), 10000);
                     final byte[] masterkey = ((KeyParameter)generator.generateDerivedParameters(256)).getKey();
 
-                   /*
-                    PBEKeySpec spec = new PBEKeySpec(password.toCharArray(),Helper.getBytes(salt_masterkey), 10000, 256);
-                    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-                    Key key = skf.generateSecret(spec);
-*/
-                    //final byte[] masterkey = key.getEncoded();
-                    // instance.setMasterkey(Helper.getString(masterkey));
+
                     String x = new String(masterkey, "UTF-8");
                     Log.i("Masterkey", x);
                     SecretKeySpec secretKeySpec = Helper.buildKey(masterkey);
-                    //SecretKeySpec secretKeySpec = new SecretKeySpec(instance.getMasterkey().getBytes(), "AES");
+
                     Cipher cipher = Cipher.getInstance("AES");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
-                    //instance.setPrivate_key(Helper.getString(cipher.doFinal(instance.getPrivate_key_enc().getBytes())));
+
                     instance.setPrivate_key(cipher.doFinal(privkey));
                     instance.setLogin(userName);
                 } catch (JSONException e) {
@@ -131,11 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (NoSuchPaddingException e) {
                     e.printStackTrace();
-                }/* catch (BadPaddingException e) {
-                    e.printStackTrace();
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
-                }*/ catch (UnsupportedEncodingException e){
+                } catch (UnsupportedEncodingException e){
                     e.printStackTrace();
                 }  catch (BadPaddingException e) {
                     e.printStackTrace();
