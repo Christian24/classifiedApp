@@ -14,6 +14,7 @@ import org.spongycastle.util.io.pem.PemWriter;
 
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -136,6 +137,10 @@ public class Helper {
         }
 
 
+    }
+    public static int getTimestamp() {
+        long unixTime = System.currentTimeMillis() / 1000L;
+        return (int)unixTime;
     }
 
 
