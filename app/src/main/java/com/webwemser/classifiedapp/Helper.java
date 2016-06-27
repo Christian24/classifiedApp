@@ -153,6 +153,18 @@ public class Helper {
         digest.update(iv);
        return digest.digest(key_recipient_enc);
     }
+    public static byte[] generateSig_service(byte[] key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc,
+                                             byte[] sig_recipient, byte[] timestamp, byte[] recipient) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update(key);
+        digest.update(Helper.getBytes(identity));
+        digest.update(cipher);
+        digest.update(iv);
+        digest.update(key_recipient_enc);
+        digest.update(sig_recipient);
+        digest.update(timestamp);
+       return digest.digest(recipient);
+    }
 
 
 }
