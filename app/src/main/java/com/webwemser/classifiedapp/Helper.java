@@ -97,16 +97,14 @@ public class Helper {
         try {
 
             //pemWriter.writeObject(keyPair);
-           // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
-jcaPEMWriter.writeObject(key);
+            // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
+            jcaPEMWriter.writeObject(key);
             jcaPEMWriter.close();
-          //  pemWriter.flush();
-           // pemWriter.close();
+            //  pemWriter.flush();
+            // pemWriter.close();
 
         } catch (IOException e) {
             Log.i("Caught exception:" , e.getMessage());
-
-
             return "";
         }
 

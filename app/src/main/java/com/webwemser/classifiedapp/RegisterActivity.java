@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -25,19 +24,15 @@ import org.spongycastle.crypto.params.KeyParameter;
 
 
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -56,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void register(View view) throws NoSuchAlgorithmException, InvalidKeySpecException {
         if(!username.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
             //Username and Password are present
-        register(username.getText().toString(),password.getText().toString());
+            register(username.getText().toString(),password.getText().toString());
         }
     }
     protected void register(final String userName, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -70,11 +65,11 @@ public class RegisterActivity extends AppCompatActivity {
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
             //CPbkdf2.derive(Helper.getString(bytes),password,10000,256);
-            PBEKeySpec spec = new PBEKeySpec(password.toCharArray(),bytes, 10000, 256);
+            /*PBEKeySpec spec = new PBEKeySpec(password.toCharArray(),bytes, 10000, 256);
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             Key key = skf.generateSecret(spec);
-
-            final byte[] masterkey = key.getEncoded(); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey(); //CPbkdf2.derive(Helper.getString(bytes),password,10000,256); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
+*/
+            final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey(); //CPbkdf2.derive(Helper.getString(bytes),password,10000,256); //((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
 
@@ -82,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
             PrivateKey privateKey = keys.getPrivate();
             PublicKey publicKey = keys.getPublic();
             String privateString = keys.getPublic().getEncoded().toString();
-           // SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
+            // SecretKeySpec secretKeySpec = new SecretKeySpec(masterkey,"AES");
             SecretKeySpec secretKeySpec = null;
             try {
                 secretKeySpec = Helper.buildKey(masterkey);
@@ -93,11 +88,11 @@ public class RegisterActivity extends AppCompatActivity {
             try
             {
                 Cipher cipher = Cipher.getInstance("AES");
-                cipher.init(Cipher.ENCRYPT_MODE,key);
+                cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
                 private_key_enc= cipher.doFinal(privateKey.getEncoded());
-               // Cipher cipher = Cipher.getInstance("AES");
+                // Cipher cipher = Cipher.getInstance("AES");
                 //cipher.init(Cipher.ENCRYPT_MODE,key);
-               //private_key_enc= cipher.doFinal(publicKey.getEncoded());
+                //private_key_enc= cipher.doFinal(publicKey.getEncoded());
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);
 
@@ -116,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 params.put("privkey_user_enc",privKeyToSendEnc);
                 JSONObject json = new JSONObject(params);
-               Uri url = Helper.getUriBuilder().appendPath(userName).build();
+                Uri url = Helper.getUriBuilder().appendPath(userName).build();
                 JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url.toString(),json,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -148,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.i("Log ParseResponse", response.statusCode+"");
                         int mStatusCode = response.statusCode;
                         if(mStatusCode==201){
-                          Singleton instance = Singleton.getSingleton();
+                            Singleton instance = Singleton.getSingleton();
                             instance.setMasterkey(Helper.getString(masterkey));
 
                             startChatActivity();
@@ -157,8 +152,8 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 };
 
-              RequestSingleton.getInstance(getApplicationContext()).add(request);
-                
+                RequestSingleton.getInstance(getApplicationContext()).add(request);
+
             }catch (Exception e) {
                 Log.i("Log ", e.getMessage());
             }
@@ -170,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Toast.makeText(getApplicationContext(), "Erfolgreich registriert", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(RegisterActivity.this, ChatsActitvity.class);
+                Intent intent = new Intent(RegisterActivity.this, ChatsActivity.class);
                 intent.putExtra(USERNAME, username.getText().toString());
                 startActivity(intent);
             }

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -52,7 +51,7 @@ public class MyListAdapter extends BaseAdapter {
         meet = data.get(position);
 
         // Setting all values in listview
-        contact.setText(meet.get(ChatsActitvity.CONTACT));
+        contact.setText(meet.get(ChatsActivity.CONTACT));
         return vi;
     }
 }

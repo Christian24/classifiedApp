@@ -22,8 +22,8 @@
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".LoginActivity" />
-        <activity android:name=".ChatsActitvity" />
-        <activity android:name=".SendActivity" android:parentActivityName=".ChatsActitvity"/>
+        <activity android:name=".ChatsActivity" />
+        <activity android:name=".SendActivity" android:parentActivityName=".ChatsActivity"/>
     </application>
 
 </manifest>

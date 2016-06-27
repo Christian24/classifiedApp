@@ -7,6 +7,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -16,9 +18,6 @@ import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.crypto.digests.SHA256Digest;
-import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.spongycastle.crypto.params.KeyParameter;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -37,10 +36,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private EditText userName, password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        userName = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
 
     }
 
@@ -50,10 +53,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void startLogin(View view) {
-        // Intent intent = new Intent(this,ChatsActitvity.class);
-        // startActivity(intent);
-        EditText userName = (EditText) findViewById(R.id.username);
-        EditText password = (EditText) findViewById(R.id.password);
         if (userName.getText() != null && password.getText() != null) {
             login(userName.getText().toString(), password.getText().toString());
         }
@@ -86,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 int mStatusCode = response.statusCode;
-
+                Log.i("Statuscode", response.statusCode+"");
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
                     Singleton instance = Singleton.getSingleton();
@@ -111,8 +110,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     final byte[] masterkey = key.getEncoded();
                     instance.setMasterkey(Helper.getString(masterkey));
-                    String x = new String(masterkey, "UTF-8");
-                    Log.i("Masterkey", x);
+                    Log.i("Masterkey", Helper.getString(masterkey));
                     SecretKeySpec secretKeySpec = Helper.buildKey(instance.getMasterkey().getBytes());
                     //SecretKeySpec secretKeySpec = new SecretKeySpec(instance.getMasterkey().getBytes(), "AES");
                     Cipher cipher = Cipher.getInstance("AES");
@@ -142,17 +140,24 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
                 }
-
+                if(mStatusCode==200){
+                    startChatActivity();
+                }
                 return json;
             }
         };
-
         RequestSingleton.getInstance(getApplicationContext()).add(request);
     }
 
-
-
-
-
-
+    public void startChatActivity(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Erfolgreich registriert", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, ChatsActivity.class);
+                intent.putExtra(RegisterActivity.USERNAME, userName.getText().toString());
+                startActivity(intent);
+            }
+        });
+    }
 }
