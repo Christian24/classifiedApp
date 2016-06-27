@@ -55,7 +55,7 @@ private static Message instance;
         int timestamp = json.getInt("timestamp");
         final String sender = json.getString("sender");
         final String content_enc = Helper.base64Encoding(json.getString("content_enc"));
-        final String iv = json.getString("iv");
+        final String iv = Helper.base64Decoding(json.getString("iv"));
         final String key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
         final String sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
         String sig_service = Helper.base64Decoding(json.getString("sig_service"));

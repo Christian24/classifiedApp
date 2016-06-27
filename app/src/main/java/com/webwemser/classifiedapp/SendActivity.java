@@ -67,7 +67,7 @@ public class SendActivity extends AppCompatActivity {
             rsa.init(Cipher.ENCRYPT_MODE,pubkey);
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
             byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),username,message_enc,iv,key_recipient_enc);
-            
+
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
 
