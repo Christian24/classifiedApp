@@ -101,22 +101,23 @@ public class LoginActivity extends AppCompatActivity {
                     byte[] privkey = Base64.decode(privkey_user_enc, Base64.DEFAULT);
                     instance.setPrivate_key_enc(Helper.getString(privkey));
                     byte[] passwordBytes = password.getBytes();
-                    /*PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
+                    PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
                     generator.init(passwordBytes,Helper.getBytes(salt_masterkey), 10000);
-                    byte[] masterkey =  ((KeyParameter) generator.generateDerivedParameters(256)).getKey();
-                   */
+                    final byte[] masterkey =  ((KeyParameter) generator.generateDerivedParameters(256)).getKey();
+
+                   /*
                     PBEKeySpec spec = new PBEKeySpec(password.toCharArray(),Helper.getBytes(salt_masterkey), 10000, 256);
                     SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
                     Key key = skf.generateSecret(spec);
-
-                    final byte[] masterkey = key.getEncoded();
-                    instance.setMasterkey(Helper.getString(masterkey));
+*/
+                    //final byte[] masterkey = key.getEncoded();
+                   // instance.setMasterkey(Helper.getString(masterkey));
                     String x = new String(masterkey, "UTF-8");
                     Log.i("Masterkey", x);
-                    SecretKeySpec secretKeySpec = Helper.buildKey(instance.getMasterkey().getBytes());
+                    SecretKeySpec secretKeySpec = Helper.buildKey(masterkey);
                     //SecretKeySpec secretKeySpec = new SecretKeySpec(instance.getMasterkey().getBytes(), "AES");
                     Cipher cipher = Cipher.getInstance("AES");
-                    cipher.init(Cipher.DECRYPT_MODE, key);
+                    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
                     //instance.setPrivate_key(Helper.getString(cipher.doFinal(instance.getPrivate_key_enc().getBytes())));
                    instance.setPrivate_key(Helper.getString(cipher.doFinal(privkey)));
@@ -135,9 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }*/ catch (UnsupportedEncodingException e){
                     e.printStackTrace();
-                } catch (InvalidKeySpecException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
+                }  catch (BadPaddingException e) {
                     e.printStackTrace();
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
