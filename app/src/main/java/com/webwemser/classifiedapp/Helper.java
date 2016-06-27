@@ -143,8 +143,11 @@ public class Helper {
         return (int)unixTime;
     }
     public static byte[] generateSig_recipient(Key key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
+        return generateSig_recipient(key.getEncoded(),identity,cipher,iv,key_recipient_enc);
+    }
+    public static byte[] generateSig_recipient(byte[] key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        digest.update(key.getEncoded());
+        digest.update(key);
         digest.update(Helper.getBytes(identity));
         digest.update(cipher);
         digest.update(iv);

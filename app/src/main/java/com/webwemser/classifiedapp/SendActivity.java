@@ -17,6 +17,8 @@ import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONObject;
 import org.spongycastle.pqc.math.ntru.polynomial.Constants;
 import java.io.UnsupportedEncodingException;
+import java.security.Key;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.crypto.Cipher;
@@ -45,17 +47,27 @@ public class SendActivity extends AppCompatActivity {
 
     public void sendMessage(String message){
         try{
+            SecureRandom random = new SecureRandom();
 
             Cipher cipher = Cipher.getInstance("AES/CBC/NOPADDING");
-            byte[] static_key = Helper.getRandomBytes(16);
-            SecretKeySpec keySpec = new SecretKeySpec(static_key, "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(Constants.IV_VECTOR);
+            byte[] key_recipient = random.generateSeed(16);
+            byte[] iv = random.generateSeed(16);
+
+
+            SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
 
-            byte[] results = cipher.doFinal(message.getBytes());
+            byte[] message_enc = cipher.doFinal(Helper.getBytes(message));
 
-
-
+            Intent intent = getIntent();
+            String pubkey_string= intent.getStringExtra(ChatsActivity.PUBKEY);
+            Key pubkey = Helper.getKeyFromPEM(pubkey_string);
+            Cipher rsa = Cipher.getInstance("RSA");
+            rsa.init(Cipher.ENCRYPT_MODE,pubkey);
+            byte[] key_recipient_enc = rsa.doFinal(key_recipient);
+            byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),username,message_enc,iv,key_recipient_enc);
+            
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
 
