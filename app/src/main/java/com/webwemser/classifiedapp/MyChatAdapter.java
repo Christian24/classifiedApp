@@ -56,6 +56,7 @@ public class MyChatAdapter extends BaseAdapter {
         }
         // Setting all values in listview
         message.setText(meet.get(SendActivity.MESSAGE));
+
         return vi;
     }
 }

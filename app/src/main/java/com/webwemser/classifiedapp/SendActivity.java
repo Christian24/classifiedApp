@@ -1,11 +1,14 @@
 package com.webwemser.classifiedapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.android.volley.NetworkResponse;
@@ -57,7 +60,7 @@ public class SendActivity extends AppCompatActivity {
         try{
             SecureRandom random = new SecureRandom();
 
-            Cipher cipher = Cipher.getInstance("AES/CBC/NOPADDING");
+            Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
             byte[] key_recipient = random.generateSeed(16);
             byte[] iv = random.generateSeed(16);
             SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
@@ -66,9 +69,10 @@ public class SendActivity extends AppCompatActivity {
             byte[] message_enc = cipher.doFinal(Helper.getBytes(message));
             Intent intent = getIntent();
             String pubkey_string = intent.getStringExtra(ChatsActivity.PUBKEY);
+            Log.i("Pubkey_String", pubkey_string);
             Key pubkey = Helper.getKeyFromPEM(pubkey_string);
             Cipher rsa = Cipher.getInstance("RSA");
-            rsa.init(Cipher.ENCRYPT_MODE,pubkey);
+            rsa.init(Cipher.ENCRYPT_MODE, pubkey);
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
             String timestamp = Integer.toString( Helper.getTimestamp());
             byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),Singleton.getSingleton().getLogin(),message_enc,iv,key_recipient_enc);
@@ -146,5 +150,28 @@ public class SendActivity extends AppCompatActivity {
         // Getting adapter by passing xml data ArrayList
         adapter = new MyChatAdapter(this, chatList);
         list.setAdapter(adapter);
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                // TODO Auto-generated method stub
+                new AlertDialog.Builder(SendActivity.this)
+                        .setTitle("Nachricht löschen")
+                        .setMessage("Möchten sie die Nachricht wirklich löschen?")
+                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp))
+                        .show();
+                Log.v("Long clicked","Position: " + pos);
+                return true;
+            }
+        });
     }
 }

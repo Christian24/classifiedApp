@@ -36,7 +36,8 @@ public class Helper {
     public static String getString(byte[] bytes) {
         return new String(bytes,StandardCharsets.UTF_8);
     }
-   public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+    public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         Provider provider = new BouncyCastleProvider();
         MessageDigest digester = MessageDigest.getInstance("SHA-256", provider);
         digester.update(password);
@@ -44,21 +45,27 @@ public class Helper {
         SecretKeySpec spec = new SecretKeySpec(key, "AES");
         return spec;
     }
+
     public static byte[] getBytes(String string) {
         return string.getBytes(StandardCharsets.UTF_8);
     }
+
     public static String base64Encoding(String input) {
-     return   getString(base64Encoding(getBytes(input)));
+        return getString(base64Encoding(getBytes(input)));
     }
+
     public static byte[] base64Encoding(byte[] input) {
        return Base64.encode(input,Base64.DEFAULT);
     }
+
     public static byte[] base64Decoding(byte[] input) {
        return Base64.decode(input,Base64.DEFAULT);
     }
+
     public static String base64Decoding(String input) {
-    return getString(base64Decoding(getBytes(input)));
+        return getString(base64Decoding(getBytes(input)));
     }
+
     private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
 
     /**
@@ -121,12 +128,11 @@ public class Helper {
         PemReader pemReader = new PemReader(stringReader);
 
         try {
-
             //pemWriter.writeObject(keyPair);
             // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
-          PemObject obj = pemReader.readPemObject();
+            PemObject obj = pemReader.readPemObject();
             pemReader.close();
-
+            Log.i("PEM", Helper.getString(obj.getContent()));
             return  new SecretKeySpec(obj.getContent(), 0, obj.getContent().length, "RSA");
             //  pemWriter.flush();
             // pemWriter.close();
@@ -135,16 +141,17 @@ public class Helper {
             Log.i("Caught exception:" , e.getMessage());
             return null;
         }
-
-
     }
+
     public static int getTimestamp() {
         long unixTime = System.currentTimeMillis() / 1000L;
         return (int)unixTime;
     }
+
     public static byte[] generateSig_recipient(Key key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
         return generateSig_recipient(key.getEncoded(),identity,cipher,iv,key_recipient_enc);
     }
+
     public static byte[] generateSig_recipient(byte[] key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         digest.update(key);
@@ -153,6 +160,7 @@ public class Helper {
         digest.update(iv);
        return digest.digest(key_recipient_enc);
     }
+
     public static byte[] generateSig_service(byte[] key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc,
                                              byte[] sig_recipient, byte[] timestamp, byte[] recipient) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -165,6 +173,4 @@ public class Helper {
         digest.update(timestamp);
        return digest.digest(recipient);
     }
-
-
 }
