@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), "Erfolgreich registriert", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Erfolgreich angemeldet", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, ChatsActivity.class);
                 intent.putExtra(RegisterActivity.USERNAME, userName.getText().toString());
                 startActivity(intent);

@@ -40,7 +40,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class ChatsActivity extends AppCompatActivity {
 
-    public static final String USER = "USERNAME", CONTACT = "CONTACT", KEY_POSITION = "POSITION";
+    public static final String USER = "USERNAME", CONTACT = "CONTACT", KEY_POSITION = "POSITION", PUBKEY = "PUBKEY";
     private EditText username;
     private ListView list;
     private MyListAdapter adapter;
@@ -81,12 +81,12 @@ public class ChatsActivity extends AppCompatActivity {
                 Intent intent = new Intent(ChatsActivity.this, SendActivity.class);
                 intent.putExtra(KEY_POSITION, position);
                 startActivity(intent);
-    }
+        }
     });
     }
 
     protected void login(final String userName) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.URL + userName, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.URL + userName + "/pubkey", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("Log Response ", response.toString());
@@ -112,17 +112,18 @@ public class ChatsActivity extends AppCompatActivity {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 int mStatusCode = response.statusCode;
+                String pubkey_user = "";
                 Log.i("Statuscode", response.statusCode+"");
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
-                    String pubkey_user = json.result.getString("pubkey_user");
+                    pubkey_user = json.result.getString("pubkey_user");
                     Log.i("Pubkey_User", pubkey_user);
+                    if (mStatusCode==200){
+                        startChatActivity(pubkey_user);
+                    }
                 }
                 catch (Exception e){
 
-                }
-                if (mStatusCode==200){
-                    startChatActivity();
                 }
                 return json;
             }
@@ -130,12 +131,13 @@ public class ChatsActivity extends AppCompatActivity {
         RequestSingleton.getInstance(getApplicationContext()).add(request);
     }
 
-    public void startChatActivity(){
+    public void startChatActivity(final String pubkey){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent(ChatsActivity.this, SendActivity.class);
-                intent.putExtra(USER,username.getText().toString());
+                intent.putExtra(USER, username.getText().toString());
+                intent.putExtra(PUBKEY, pubkey);
                 startActivity(intent);
             }
         });
