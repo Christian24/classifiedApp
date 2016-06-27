@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -29,12 +31,26 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Message extends Application {
 private static Message instance;
-    private Message() {}
+    protected HashMap<String,ArrayList<HashMap<String,String>>> conversations;
+    private Message() {
+        conversations = new HashMap<String,ArrayList<HashMap<String,String>>>();
+    }
     public static Message getInstance() {
     if(instance == null)
     instance = new Message();
         return instance;
     }
+    public void addMessage(String message, String recipient) {
+        if(!conversations.containsKey(recipient)) {
+            conversations.put(recipient, new ArrayList<HashMap<String, String>>());
+        }
+        ArrayList<HashMap<String,String>> conversation = conversations.get(recipient);
+        HashMap<String,String> newMessage = new HashMap<>();
+        newMessage.put(recipient,message);
+        conversation.add(newMessage);
+
+    }
+
     public void addMessage(Context context,JSONObject json) throws JSONException {
         int timestamp = json.getInt("timestamp");
         final String sender = json.getString("sender");
@@ -87,6 +103,7 @@ private static Message instance;
                         SecretKey aesKey = new SecretKeySpec(key_recipient, "AES");
                         cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(Helper.getBytes(iv)));
                       byte[] message =  cipher.doFinal(Helper.getBytes(content_enc));
+                        addMessage(Helper.getString(message),sender);
                     }
                     }
                 }
