@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -42,9 +41,7 @@ public class MyListAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View vi = convertView;
-        if(convertView==null)
-            vi = inflater.inflate(R.layout.list_row, null);
-
+        if(convertView==null) vi = inflater.inflate(R.layout.list_row, null);
         TextView contact = (TextView)vi.findViewById(R.id.contact_name);
 
         HashMap<String, String> meet;

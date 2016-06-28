@@ -15,7 +15,9 @@
         android:divider="#FFFFFF"
         android:dividerHeight="0dp"
         android:fastScrollAlwaysVisible="true"
-        android:fastScrollEnabled="true" />
+        android:fastScrollEnabled="true"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"/>
 
     <include
         layout="@layout/type_message_area"

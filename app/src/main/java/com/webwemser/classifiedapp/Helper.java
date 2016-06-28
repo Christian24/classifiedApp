@@ -3,24 +3,16 @@ package com.webwemser.classifiedapp;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
-
-import org.spongycastle.crypto.util.PublicKeyFactory;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.openssl.PEMWriter;
 import org.spongycastle.openssl.jcajce.JcaPEMWriter;
 import org.spongycastle.util.io.pem.PemObject;
 import org.spongycastle.util.io.pem.PemReader;
-import org.spongycastle.util.io.pem.PemWriter;
-
-
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +21,6 @@ import java.security.SecureRandom;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-
 import javax.crypto.spec.SecretKeySpec;
 
 /**

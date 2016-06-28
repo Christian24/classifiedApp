@@ -99,14 +99,11 @@ public class ChatsActivity extends AppCompatActivity {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 int mStatusCode = response.statusCode;
-                String pubkey_user = "";
                 Log.i("Statuscode", response.statusCode+"");
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
-                    pubkey_user = json.result.getString("pubkey_user");
-                    Log.i("Pubkey_User", pubkey_user);
                     if (mStatusCode==200 || mStatusCode==304){
-                        startChatActivity(pubkey_user);
+                        startChatActivity(json.result.getString("pubkey_user"));
                     }
                 }
                 catch (Exception e){
@@ -125,6 +122,7 @@ public class ChatsActivity extends AppCompatActivity {
                 Intent intent = new Intent(ChatsActivity.this, SendActivity.class);
                 intent.putExtra(USER, username.getText().toString());
                 intent.putExtra(PUBKEY, pubkey);
+                Log.i("PUBKEY", pubkey);
                 startActivity(intent);
             }
         });

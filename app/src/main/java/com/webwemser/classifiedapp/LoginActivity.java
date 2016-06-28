@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -21,19 +20,13 @@ import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.params.KeyParameter;
-
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-
-
 import java.security.NoSuchAlgorithmException;
-
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
 import javax.crypto.spec.SecretKeySpec;
 
 public class LoginActivity extends AppCompatActivity {
@@ -46,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         userName = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-
     }
 
     public void startRegister(View view) {

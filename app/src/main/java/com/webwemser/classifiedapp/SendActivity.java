@@ -2,7 +2,6 @@ package com.webwemser.classifiedapp;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -19,16 +17,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
-
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.SecureRandom;
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -38,15 +32,16 @@ public class SendActivity extends AppCompatActivity {
     private EditText message;
     private MyChatAdapter adapter;
     private ListView list;
-    private String username;
+    private String username, publicKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
         message = (EditText)findViewById(R.id.message);
-        Intent intent = getIntent();
-        username = intent.getStringExtra(ChatsActivity.USER);
+        username = getIntent().getStringExtra(ChatsActivity.USER);
+        publicKey = getIntent().getStringExtra(ChatsActivity.PUBKEY);
+        Log.i("Pubkey getIntent", publicKey);
         this.setTitle(username);
         message.setHint("Message to " + username);
         showChats();
@@ -62,17 +57,13 @@ public class SendActivity extends AppCompatActivity {
     private void sendMessage(String message){
         try{
             SecureRandom random = new SecureRandom();
-
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             byte[] key_recipient = random.generateSeed(16);
             SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
             byte[] message_enc = cipher.doFinal(Helper.getBytes(message));
             byte[] iv = cipher.getIV();
-            Intent intent = getIntent();
-            String pubkey_string = intent.getStringExtra(ChatsActivity.PUBKEY);
-            Log.i("Pubkey_String", pubkey_string);
-            Key pubkey = Helper.getKeyFromPEM(pubkey_string);
+            Key pubkey = Helper.getKeyFromPEM(publicKey);
             Cipher rsa = Cipher.getInstance("RSA");
             rsa.init(Cipher.ENCRYPT_MODE,Helper.generatePublicKey(pubkey));
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);

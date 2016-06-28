@@ -3,7 +3,6 @@ package com.webwemser.classifiedapp.singleton;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -11,16 +10,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.Helper;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;

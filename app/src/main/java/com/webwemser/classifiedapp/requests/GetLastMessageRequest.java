@@ -3,7 +3,6 @@ package com.webwemser.classifiedapp.requests;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -12,11 +11,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.Helper;
 import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.Singleton;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.crypto.digests.SHA256Digest;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

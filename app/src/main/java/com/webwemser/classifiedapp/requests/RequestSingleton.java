@@ -2,7 +2,6 @@ package com.webwemser.classifiedapp.requests;
 
 import android.app.Application;
 import android.content.Context;
-
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;

@@ -48,12 +48,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.spec.KeySpec;
 import java.util.Formatter;
-
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+
 @Deprecated
 public class CPbkdf2
 {
