@@ -114,9 +114,12 @@ public class LoginActivity extends AppCompatActivity {
                     Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
-
                     instance.setPrivate_key(cipher.doFinal(privkey));
                     instance.setLogin(userName);
+
+                    if(mStatusCode==200 || mStatusCode==304){
+                        startChatActivity();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (NoSuchAlgorithmException e) {
@@ -131,9 +134,6 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
-                }
-                if(mStatusCode==200 || mStatusCode==304){
-                    startChatActivity();
                 }
                 return json;
             }
