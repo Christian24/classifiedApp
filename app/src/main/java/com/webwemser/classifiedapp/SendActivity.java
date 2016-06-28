@@ -60,13 +60,14 @@ public class SendActivity extends AppCompatActivity {
         try{
             SecureRandom random = new SecureRandom();
 
-            Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
             byte[] key_recipient = random.generateSeed(16);
-            byte[] iv = random.generateSeed(16);
+
             SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
             byte[] message_enc = cipher.doFinal(Helper.getBytes(message));
+            byte[] iv = cipher.getIV();
             Intent intent = getIntent();
             String pubkey_string = intent.getStringExtra(ChatsActivity.PUBKEY);
             Log.i("Pubkey_String", pubkey_string);
