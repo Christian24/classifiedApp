@@ -3,6 +3,8 @@ package com.webwemser.classifiedapp;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
+
+
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.openssl.jcajce.JcaPEMWriter;
 import org.spongycastle.util.io.pem.PemObject;
@@ -12,12 +14,18 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -145,35 +153,55 @@ public class Helper {
         X509EncodedKeySpec spec = new X509EncodedKeySpec(key.getEncoded());
         return  (RSAPublicKey) keyFactory.generatePublic(spec);
     }
+    public static RSAPrivateKey generatePrivateKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        KeyFactory keyFactory = null;
+
+        keyFactory = KeyFactory.getInstance("RSA");
+
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
+        return  (RSAPrivateKey) keyFactory.generatePrivate(spec);
+    }
 
     public static int getTimestamp() {
         long unixTime = System.currentTimeMillis()/1000;
         return (int)unixTime;
     }
 
-    public static byte[] generateSig_recipient(Key key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
-        return generateSig_recipient(key.getEncoded(),identity,cipher,iv,key_recipient_enc);
+    public static byte[] generateSig_recipient(PrivateKey key, String identity, byte[] cipher, byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(key);
+       signature.update(getBytes(identity));
+
+        signature.update(cipher);
+       signature.update(iv);
+        signature.update(key_recipient_enc);
+    return signature.sign();
+    }
+    public static boolean generateSig_recipient(PublicKey key, byte[] signatureToVerify) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initVerify(key);
+       return signature.verify(signatureToVerify);
+
     }
 
-    public static byte[] generateSig_recipient(byte[] key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        digest.update(key);
-        digest.update(Helper.getBytes(identity));
-        digest.update(cipher);
-        digest.update(iv);
-       return digest.digest(key_recipient_enc);
+    public static byte[] generateSig_service(PrivateKey key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc,
+                                             byte[] sig_recipient, byte[] timestamp, byte[] recipient) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(key);
+
+        signature.update(Helper.getBytes(identity));
+        signature.update(cipher);
+        signature.update(iv);
+        signature.update(key_recipient_enc);
+        signature.update(sig_recipient);
+        signature.update(timestamp);
+       signature.update(recipient);
+        return signature.sign();
+    }
+    public static boolean generateSig_service(PublicKey key, byte[] signatureToVerify) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initVerify(key);
+        return signature.verify(signatureToVerify);
     }
 
-    public static byte[] generateSig_service(byte[] key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc,
-                                             byte[] sig_recipient, byte[] timestamp, byte[] recipient) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        digest.update(key);
-        digest.update(Helper.getBytes(identity));
-        digest.update(cipher);
-        digest.update(iv);
-        digest.update(key_recipient_enc);
-        digest.update(sig_recipient);
-        digest.update(timestamp);
-       return digest.digest(recipient);
-    }
 }

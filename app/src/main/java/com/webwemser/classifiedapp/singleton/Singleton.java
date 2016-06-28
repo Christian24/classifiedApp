@@ -2,6 +2,8 @@ package com.webwemser.classifiedapp.singleton;
 
 import android.app.Application;
 
+import java.security.PrivateKey;
+
 /**
  * Created by Christian on 23.06.2016.
  */
@@ -29,7 +31,7 @@ private static Singleton singleton;
     }
 
     protected byte[] private_key_enc;
-    protected byte[] private_key;
+    protected PrivateKey private_key;
 
     public byte[] getPubkey() {
         return pubkey;
@@ -55,11 +57,11 @@ private static Singleton singleton;
         this.private_key_enc = private_key_enc;
     }
 
-    public byte[] getPrivate_key() {
+    public PrivateKey getPrivate_key() {
         return private_key;
     }
 
-    public void setPrivate_key(byte[] private_key) {
+    public void setPrivate_key(PrivateKey private_key) {
         this.private_key = private_key;
     }
 

@@ -68,8 +68,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             KeyPair keys = rsa.generateKeyPair();
             PrivateKey privateKey = keys.getPrivate();
+            Singleton.getSingleton().setPrivate_key(privateKey);
             PublicKey publicKey = keys.getPublic();
-            String privateString = keys.getPublic().getEncoded().toString();
+
 
             SecretKeySpec secretKeySpec = null;
             try {

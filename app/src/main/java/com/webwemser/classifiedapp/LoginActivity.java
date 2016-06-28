@@ -23,6 +23,10 @@ import org.spongycastle.crypto.params.KeyParameter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPrivateKeySpec;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -104,8 +108,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-
-                    instance.setPrivate_key(cipher.doFinal(privkey));
+                    PrivateKey privateKey = Helper.generatePrivateKey(cipher.doFinal(privkey));
+                            instance.setPrivate_key(privateKey);
                     instance.setLogin(userName);
 
                     if(mStatusCode==200 || mStatusCode==304){
@@ -124,6 +128,8 @@ public class LoginActivity extends AppCompatActivity {
                 }  catch (BadPaddingException e) {
                     e.printStackTrace();
                 } catch (IllegalBlockSizeException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeySpecException e) {
                     e.printStackTrace();
                 }
                 return json;
