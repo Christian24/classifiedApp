@@ -99,7 +99,7 @@ private static Message instance;
                       Cipher rsa = Cipher.getInstance("RSA");
                         rsa.init(Cipher.DECRYPT_MODE,key);
                        byte[] key_recipient = rsa.doFinal(Helper.getBytes(key_recipient_enc));
-                        Cipher cipher = Cipher.getInstance("AES/CBC/NOPADDING");
+                        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
                         SecretKey aesKey = new SecretKeySpec(key_recipient, "AES");
                         cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(Helper.getBytes(iv)));
                       byte[] message =  cipher.doFinal(Helper.getBytes(content_enc));

@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
             byte[] private_key_enc;
             try
             {
-                Cipher cipher = Cipher.getInstance("AES");
+                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
                 cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
                 private_key_enc= cipher.doFinal(privateKey.getEncoded());
 
