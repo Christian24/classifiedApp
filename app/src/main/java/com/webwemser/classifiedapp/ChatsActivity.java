@@ -3,7 +3,6 @@ package com.webwemser.classifiedapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,24 +18,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public class ChatsActivity extends AppCompatActivity {
 
@@ -48,7 +34,7 @@ public class ChatsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chats_actitvity);
+        setContentView(R.layout.activity_chats);
         username = (EditText)findViewById(R.id.username);
         this.setTitle("Chats");
     }

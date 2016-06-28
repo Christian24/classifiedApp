@@ -147,11 +147,11 @@ public class SendActivity extends AppCompatActivity {
     private void showChats(){
         ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
         int x = 0;
-        for(int i = 0; i < 10; i++){
+        for(int i = 1; i <= 100; i++){
             HashMap<String, String> map = new HashMap<String, String>();
             if(x%2==0)map.put(SENDER, "Matthias");
             if(x%2!=0)map.put(SENDER, "Self");
-            map.put(MESSAGE, "Hallo");
+            map.put(MESSAGE, "Hallo "+i);
             chatList.add(map);
             x++;
         }

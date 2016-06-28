@@ -13,7 +13,7 @@
         android:paddingBottom="50dp"
         android:orientation="horizontal"
         android:divider="#FFFFFF"
-        android:dividerHeight="1dp"
+        android:dividerHeight="0dp"
         android:fastScrollAlwaysVisible="true"
         android:fastScrollEnabled="true" />
 
