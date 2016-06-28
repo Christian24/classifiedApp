@@ -13,7 +13,9 @@
         android:paddingBottom="50dp"
         android:orientation="horizontal"
         android:divider="#FFFFFF"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="1dp"
+        android:fastScrollAlwaysVisible="true"
+        android:fastScrollEnabled="true" />
 
     <include
         layout="@layout/type_message_area"
