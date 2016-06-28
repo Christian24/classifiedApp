@@ -60,7 +60,7 @@ public class SendActivity extends AppCompatActivity {
         try{
             SecureRandom random = new SecureRandom();
 
-            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             byte[] key_recipient = random.generateSeed(16);
 
             SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
