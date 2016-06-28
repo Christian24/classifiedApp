@@ -19,10 +19,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONObject;
+import org.spongycastle.crypto.util.PublicKeyFactory;
 import org.spongycastle.pqc.math.ntru.polynomial.Constants;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
+import java.security.KeyFactory;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.crypto.Cipher;
@@ -71,9 +78,14 @@ public class SendActivity extends AppCompatActivity {
             Intent intent = getIntent();
             String pubkey_string = intent.getStringExtra(ChatsActivity.PUBKEY);
             Log.i("Pubkey_String", pubkey_string);
+
             Key pubkey = Helper.getKeyFromPEM(pubkey_string);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(pubkey.getEncoded());
+           RSAPublicKey publicKey = (RSAPublicKey) keyFactory.generatePublic(spec);
+
             Cipher rsa = Cipher.getInstance("RSA");
-            rsa.init(Cipher.ENCRYPT_MODE, pubkey);
+            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
             String timestamp = Integer.toString( Helper.getTimestamp());
             byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),Singleton.getSingleton().getLogin(),message_enc,iv,key_recipient_enc);
