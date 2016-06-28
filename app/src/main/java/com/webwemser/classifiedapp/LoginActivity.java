@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("Masterkey", x);
                     SecretKeySpec secretKeySpec = Helper.buildKey(masterkey);
 
-                    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+                    Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
                     instance.setPrivate_key(cipher.doFinal(privkey));
