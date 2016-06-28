@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.SecureRandom;
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -64,19 +65,14 @@ public class SendActivity extends AppCompatActivity {
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             byte[] key_recipient = random.generateSeed(16);
-
             SecretKeySpec keySpec = new SecretKeySpec(key_recipient, "AES");
-
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
             byte[] message_enc = cipher.doFinal(Helper.getBytes(message));
             byte[] iv = cipher.getIV();
             Intent intent = getIntent();
             String pubkey_string = intent.getStringExtra(ChatsActivity.PUBKEY);
             Log.i("Pubkey_String", pubkey_string);
-
             Key pubkey = Helper.getKeyFromPEM(pubkey_string);
-
-
             Cipher rsa = Cipher.getInstance("RSA");
             rsa.init(Cipher.ENCRYPT_MODE,Helper.generatePublicKey(pubkey));
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
@@ -87,14 +83,21 @@ public class SendActivity extends AppCompatActivity {
                     iv,key_recipient_enc,digital_signature,Helper.getBytes(timestamp),Helper.getBytes(username));
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
+            Log.i("sender", Singleton.getSingleton().getLogin());
             params.put("content_enc", Helper.base64Encoding( Helper.getString(message_enc)));
+            Log.i("content_enc", Helper.base64Encoding( Helper.getString(message_enc)));
             params.put("key_recipient_enc", Helper.base64Encoding(Helper.getString(key_recipient_enc)));
-            params.put("iv", Helper.base64Encoding(Helper.getString(iv)) );
+            Log.i("key_recipient_enc", Helper.base64Encoding(Helper.getString(key_recipient_enc)));
+            params.put("iv", Helper.base64Encoding(Helper.getString(iv)));
+            Log.i("iv", Helper.base64Encoding(Helper.getString(iv)));
             params.put("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
+            Log.i("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
             params.put("timestamp", Integer.toString(Helper.getTimestamp()));
+            Log.i("Timestamp", Integer.toString(Helper.getTimestamp()));
             params.put("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
-            params.put("recipitent", username);
-
+            Log.i("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
+            params.put("recipient", username);
+            Log.i("recipient", username);
             JSONObject json = new JSONObject(params);
             Uri url = Helper.getUriBuilder().appendPath(username).appendPath("message").build();
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url.toString(),json,new Response.Listener<JSONObject>() {

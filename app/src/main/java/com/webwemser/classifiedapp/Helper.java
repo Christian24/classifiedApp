@@ -156,7 +156,7 @@ public class Helper {
     }
 
     public static int getTimestamp() {
-        long unixTime = System.currentTimeMillis() / 1000L;
+        long unixTime = System.currentTimeMillis()/1000;
         return (int)unixTime;
     }
 
