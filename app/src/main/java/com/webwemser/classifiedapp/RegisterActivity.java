@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 params.put("pubkey_user",Helper.getPEMStringFromKey(publicKey));
 
-                Singleton.getSingleton().setPubkey(publicKey.getEncoded());
+                Singleton.getSingleton().setPubkey(publicKey);
 
                 String privKeyToSendEnc= Helper.getString( Helper.base64Encoding(private_key_enc));
                 Singleton.getSingleton().setPrivate_key_enc(private_key_enc);

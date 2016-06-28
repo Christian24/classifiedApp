@@ -72,6 +72,7 @@ public class SendActivity extends AppCompatActivity {
             byte[] sig_service = Helper.generateSig_service(Singleton.getSingleton().getPrivate_key(),
                     Singleton.getSingleton().getLogin(),message_enc,
                     iv,key_recipient_enc,digital_signature,Helper.getBytes(timestamp),Helper.getBytes(username));
+            boolean correct = Helper.generateSig_service(Singleton.getSingleton().getPubkey(),sig_service);
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
             Log.i("sender", Singleton.getSingleton().getLogin());

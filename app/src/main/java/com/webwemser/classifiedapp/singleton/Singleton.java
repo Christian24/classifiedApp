@@ -3,13 +3,14 @@ package com.webwemser.classifiedapp.singleton;
 import android.app.Application;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 /**
  * Created by Christian on 23.06.2016.
  */
 public class Singleton extends Application {
 private static Singleton singleton;
-    protected byte[] pubkey;
+    protected PublicKey pubkey;
     protected byte[] masterkey;
     protected byte[] salt_masterkey;
     protected String login;
@@ -33,11 +34,11 @@ private static Singleton singleton;
     protected byte[] private_key_enc;
     protected PrivateKey private_key;
 
-    public byte[] getPubkey() {
+    public PublicKey getPubkey() {
         return pubkey;
     }
 
-    public void setPubkey(byte[] pubkey) {
+    public void setPubkey(PublicKey pubkey) {
         this.pubkey = pubkey;
     }
 

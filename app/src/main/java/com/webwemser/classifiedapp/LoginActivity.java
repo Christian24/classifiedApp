@@ -20,9 +20,12 @@ import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.params.KeyParameter;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
@@ -91,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("Salt_Masterkey", salt_masterkey);
                     instance.setSalt_masterkey(Helper.getBytes(salt_masterkey));
                     String pubkey_user = json.result.getString("pubkey_user");
-                    instance.setPubkey(Helper.getKeyFromPEM(pubkey_user).getEncoded());
+                    instance.setPubkey(Helper.generatePublicKey(Helper.getKeyFromPEM(pubkey_user)));
                     Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
                     byte[] privkey = Base64.decode(privkey_user_enc, Base64.DEFAULT);
@@ -108,7 +111,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-                    PrivateKey privateKey = Helper.generatePrivateKey(cipher.doFinal(privkey));
+                    byte[] bytePrivate = cipher.doFinal(privkey);
+                    PrivateKey privateKey = Helper.generatePrivateKey(bytePrivate);
                             instance.setPrivate_key(privateKey);
                     instance.setLogin(userName);
 
@@ -130,6 +134,10 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
                 } catch (InvalidKeySpecException e) {
+                    e.printStackTrace();
+                } catch (NoSuchProviderException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return json;
