@@ -97,7 +97,7 @@ private static Message instance;
                     if(Helper.getBytes(sig_recipient) == new_sig_recipient) {
                         //Match
                       Cipher rsa = Cipher.getInstance("RSA");
-                        rsa.init(Cipher.DECRYPT_MODE,key);
+                        rsa.init(Cipher.DECRYPT_MODE,Helper.generatePublicKey(key));
                        byte[] key_recipient = rsa.doFinal(Helper.getBytes(key_recipient_enc));
                         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
                         SecretKey aesKey = new SecretKeySpec(key_recipient, "AES");

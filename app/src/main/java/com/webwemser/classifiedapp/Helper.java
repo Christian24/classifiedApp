@@ -21,10 +21,14 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -141,6 +145,14 @@ public class Helper {
             Log.i("Caught exception:" , e.getMessage());
             return null;
         }
+    }
+    public static RSAPublicKey generatePublicKey(Key key) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        KeyFactory keyFactory = null;
+
+        keyFactory = KeyFactory.getInstance("RSA");
+
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(key.getEncoded());
+        return  (RSAPublicKey) keyFactory.generatePublic(spec);
     }
 
     public static int getTimestamp() {

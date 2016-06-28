@@ -4,13 +4,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,22 +19,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
+
 import org.json.JSONObject;
-import org.spongycastle.crypto.util.PublicKeyFactory;
-import org.spongycastle.pqc.math.ntru.polynomial.Constants;
+
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
-import java.security.KeyFactory;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SendActivity extends AppCompatActivity {
@@ -80,12 +75,10 @@ public class SendActivity extends AppCompatActivity {
             Log.i("Pubkey_String", pubkey_string);
 
             Key pubkey = Helper.getKeyFromPEM(pubkey_string);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(pubkey.getEncoded());
-           RSAPublicKey publicKey = (RSAPublicKey) keyFactory.generatePublic(spec);
+
 
             Cipher rsa = Cipher.getInstance("RSA");
-            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
+            rsa.init(Cipher.ENCRYPT_MODE,Helper.generatePublicKey(pubkey));
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
             String timestamp = Integer.toString( Helper.getTimestamp());
             byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),Singleton.getSingleton().getLogin(),message_enc,iv,key_recipient_enc);
