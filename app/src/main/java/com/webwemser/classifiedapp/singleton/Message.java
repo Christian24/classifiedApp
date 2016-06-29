@@ -3,6 +3,7 @@ package com.webwemser.classifiedapp.singleton;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -10,17 +11,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.Helper;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by Christian on 27.06.2016.
@@ -50,10 +49,10 @@ private static Message instance;
     public void addMessage(Context context,JSONObject json) throws JSONException {
         int timestamp = json.getInt("timestamp");
         final String sender = json.getString("sender");
-        final String content_enc = Helper.base64Encoding(json.getString("content_enc"));
-        final String iv = Helper.base64Decoding(json.getString("iv"));
-        final String key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
-        final String sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
+        final byte[] content_enc = Helper.base64Encoding(Helper.getBytes(json.getString("content_enc")));
+        final byte[] iv = Helper.base64Decoding(Helper.getBytes(json.getString("iv")));
+        final byte[] key_recipient_enc = Helper.base64Decoding(Helper.getBytes(json.getString("key_recipient_enc")));
+        final byte[] sig_recipient = Helper.base64Decoding(Helper.getBytes(json.getString("sig_recipient")));
         String sig_service = Helper.base64Decoding(json.getString("sig_service"));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.getUriBuilder().appendPath(sender).appendPath("pubkey").toString(), null, new Response.Listener<JSONObject>() {
             @Override
@@ -92,15 +91,12 @@ private static Message instance;
                       PublicKey publicKey   = Helper.generatePublicKey(key);
                      // byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(iv),Helper.getBytes(key_recipient_enc));
 
-                    if( Helper.generateSig_recipient(publicKey,Helper.getBytes(sig_recipient))) {
+                    if( Helper.generateSig_recipient(publicKey,sig_recipient)) {
                         //Match
-                      Cipher rsa = Cipher.getInstance("RSA");
-                        rsa.init(Cipher.DECRYPT_MODE,Helper.generatePublicKey(key));
-                       byte[] key_recipient = rsa.doFinal(Helper.getBytes(key_recipient_enc));
-                        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-                        SecretKey aesKey = new SecretKeySpec(key_recipient, "AES");
-                        cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(Helper.getBytes(iv)));
-                      byte[] message =  cipher.doFinal(Helper.getBytes(content_enc));
+                        RSACipher rsaCipher = RSACipher.getInstance();
+                       byte[] key_recipient = rsaCipher.decrypt(pubkey_user,key_recipient_enc);
+                        AESCBC aescbc = AESCBC.getInstance();
+                        byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
                         addMessage(Helper.getString(message),sender);
                     }
                     }
