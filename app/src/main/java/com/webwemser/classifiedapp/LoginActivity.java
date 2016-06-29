@@ -133,11 +133,11 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
+                    e.printStackTrace();
+                } /**catch (NoSuchProviderException e) {
+                 e.printStackTrace();
+                 }**/ catch (IOException e) {
                 } catch (InvalidKeySpecException e) {
-                    e.printStackTrace();
-                } catch (NoSuchProviderException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return json;
