@@ -20,6 +20,7 @@ import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class SendActivity extends AppCompatActivity {
             Cipher rsa = Cipher.getInstance("RSA");
             rsa.init(Cipher.ENCRYPT_MODE,Helper.generatePublicKey(pubkey));
             byte[] key_recipient_enc = rsa.doFinal(key_recipient);
-            String timestamp = Integer.toString( Helper.getTimestamp());
+            String timestamp = Integer.toString(Helper.getTimestamp());
             byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),Singleton.getSingleton().getLogin(),message_enc,iv,key_recipient_enc);
             byte[] sig_service = Helper.generateSig_service(Singleton.getSingleton().getPrivate_key(),
                     Singleton.getSingleton().getLogin(),message_enc,
@@ -84,8 +85,9 @@ public class SendActivity extends AppCompatActivity {
             Log.i("iv", Helper.base64Encoding(Helper.getString(iv)));
             params.put("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
             Log.i("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
-            params.put("timestamp", Integer.toString(Helper.getTimestamp()));
-            Log.i("Timestamp", Integer.toString(Helper.getTimestamp()));
+            //Wurzel allen Übels?
+            params.put("timestamp", timestamp);
+            Log.i("Timestamp", timestamp);
             params.put("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
             Log.i("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
             params.put("recipient", username);
