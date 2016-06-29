@@ -67,7 +67,7 @@ public class SendActivity extends AppCompatActivity {
 
             byte[] message_enc = result.getData();
             byte[] iv = result.getIv();
-            Key pubkey = Helper.getKeyFromPEM(publicKey);
+
             RSACipher rsaCipher = RSACipher.getInstance();
             byte[] key_recipient_enc = rsaCipher.encrypt(publicKey,key_recipient);
             String timestamp = Integer.toString(Helper.getTimestamp());

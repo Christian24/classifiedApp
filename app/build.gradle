@@ -29,4 +29,5 @@ dependencies {
     compile 'com.madgag.spongycastle:pkix:1.54.0.0'
     compile 'com.madgag.spongycastle:pg:1.54.0.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.google.guava:guava:19.0'
 }
