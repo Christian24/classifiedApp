@@ -85,7 +85,6 @@ public class SendActivity extends AppCompatActivity {
             Log.i("iv", Helper.base64Encoding(Helper.getString(iv)));
             params.put("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
             Log.i("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
-            //Wurzel allen Übels?
             params.put("timestamp", timestamp);
             Log.i("Timestamp", timestamp);
             params.put("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
