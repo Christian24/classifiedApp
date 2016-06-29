@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
+import com.webwemser.classifiedapp.singleton.AESECB;
 import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
@@ -28,7 +29,6 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
-import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -72,20 +72,10 @@ public class RegisterActivity extends AppCompatActivity {
             PublicKey publicKey = keys.getPublic();
 
 
-            SecretKeySpec secretKeySpec = null;
-            try {
-                secretKeySpec = Helper.buildKey(masterkey);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            byte[] private_key_enc;
             try
             {
-                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-                cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-                String privatePEM = Helper.getPEMStringFromKey(privateKey);
-                private_key_enc= cipher.doFinal(Helper.getBytes(Helper.getPEMStringFromKey(privateKey)));
-
+                AESECB aesecb = AESECB.getInstance();
+                byte[] private_key_enc =aesecb.encrypt(masterkey,privateKey.getEncoded());
 
                 HashMap<String,String> params = new HashMap<String,String>();
                 params.put("login",userName);

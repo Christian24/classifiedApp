@@ -1,20 +1,22 @@
 package com.webwemser.classifiedapp;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
+import com.webwemser.classifiedapp.singleton.AESECB;
 import com.webwemser.classifiedapp.singleton.Singleton;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.crypto.digests.SHA256Digest;
@@ -24,15 +26,11 @@ import org.spongycastle.crypto.params.KeyParameter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPrivateKeySpec;
 
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
@@ -100,7 +98,8 @@ public class LoginActivity extends AppCompatActivity {
                     instance.setPubkey(Helper.generatePublicKey(Helper.getKeyFromPEM(pubkey_user)));
                     Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
-                    byte[] privkey = Base64.decode(privkey_user_enc, Base64.DEFAULT);
+                    byte[] privkey = Helper.base64Decoding(Helper.getBytes(privkey_user_enc));
+                   // byte[] privkey = Helper.getBytes(privkey_user_string);
                     instance.setPrivate_key_enc(privkey);
                     byte[] passwordBytes = password.getBytes();
                     PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
@@ -112,13 +111,10 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("Masterkey", x);
                     SecretKeySpec secretKeySpec = Helper.buildKey(masterkey);
 
-                    Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-                    byte[] bytePrivate = cipher.doFinal(privkey);
-                    String pemString = Helper.getString(bytePrivate);
-                    Key keyFromPEM = Helper.getKeyFromPEM(pemString);
+                    AESECB aesecb = AESECB.getInstance();
+                   byte[] privateBytes = aesecb.decrypt(masterkey,privkey);
 
-                    PrivateKey privateKey = Helper.generatePrivateKey(keyFromPEM);
+                    PrivateKey privateKey = Helper.generatePrivateKey(privateBytes);
                             instance.setPrivate_key(privateKey);
                     instance.setLogin(userName);
 

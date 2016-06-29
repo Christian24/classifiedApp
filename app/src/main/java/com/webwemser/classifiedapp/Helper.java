@@ -28,6 +28,7 @@ import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -37,7 +38,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Helper {
     public static final String URL = "https://webengserver.herokuapp.com/";
     public static String getString(byte[] bytes) {
-        return new String(bytes,StandardCharsets.UTF_8);
+        return new String(bytes,StandardCharsets.ISO_8859_1);
     }
 
     public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -50,7 +51,7 @@ public class Helper {
     }
 
     public static byte[] getBytes(String string) {
-        return string.getBytes(StandardCharsets.UTF_8);
+        return string.getBytes(StandardCharsets.ISO_8859_1);
     }
 
     public static String base64Encoding(String input) {
@@ -58,11 +59,11 @@ public class Helper {
     }
 
     public static byte[] base64Encoding(byte[] input) {
-       return Base64.encode(input,Base64.DEFAULT);
+       return Base64.encode(input,Base64.NO_PADDING | Base64.NO_WRAP);
     }
 
     public static byte[] base64Decoding(byte[] input) {
-       return Base64.decode(input,Base64.DEFAULT);
+       return Base64.decode(input,Base64.NO_PADDING | Base64.NO_WRAP);
     }
 
     public static String base64Decoding(String input) {
@@ -166,7 +167,7 @@ public class Helper {
 
         keyFactory = KeyFactory.getInstance("RSA");
 
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
         return  (RSAPrivateKey) keyFactory.generatePrivate(spec);
     }
 
