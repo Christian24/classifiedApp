@@ -83,7 +83,8 @@ public class RegisterActivity extends AppCompatActivity {
             {
                 Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
                 cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
-                private_key_enc= cipher.doFinal(privateKey.getEncoded());
+                String privatePEM = Helper.getPEMStringFromKey(privateKey);
+                private_key_enc= cipher.doFinal(Helper.getBytes(Helper.getPEMStringFromKey(privateKey)));
 
 
                 HashMap<String,String> params = new HashMap<String,String>();

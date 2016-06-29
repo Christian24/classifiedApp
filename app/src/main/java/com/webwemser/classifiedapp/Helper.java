@@ -153,6 +153,14 @@ public class Helper {
         X509EncodedKeySpec spec = new X509EncodedKeySpec(key.getEncoded());
         return  (RSAPublicKey) keyFactory.generatePublic(spec);
     }
+    public static RSAPrivateKey generatePrivateKey(Key key) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        KeyFactory keyFactory = null;
+
+        keyFactory = KeyFactory.getInstance("RSA");
+
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(key.getEncoded());
+        return  (RSAPrivateKey) keyFactory.generatePrivate(spec);
+    }
     public static RSAPrivateKey generatePrivateKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory keyFactory = null;
 

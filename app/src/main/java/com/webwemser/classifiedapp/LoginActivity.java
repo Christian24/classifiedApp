@@ -24,6 +24,7 @@ import org.spongycastle.crypto.params.KeyParameter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -112,7 +113,10 @@ public class LoginActivity extends AppCompatActivity {
                     Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
                     cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
                     byte[] bytePrivate = cipher.doFinal(privkey);
-                    PrivateKey privateKey = Helper.generatePrivateKey(bytePrivate);
+                    String pemString = Helper.getString(bytePrivate);
+                    Key keyFromPEM = Helper.getKeyFromPEM(pemString);
+
+                    PrivateKey privateKey = Helper.generatePrivateKey(keyFromPEM);
                             instance.setPrivate_key(privateKey);
                     instance.setLogin(userName);
 
