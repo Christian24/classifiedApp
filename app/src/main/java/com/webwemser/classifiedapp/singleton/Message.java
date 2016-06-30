@@ -89,7 +89,7 @@ private static Message instance;
                 try {
                     pubkey_user = json.result.getString("pubkey_user");
 
-                    if (mStatusCode==200){
+                    if (mStatusCode==200 || mStatusCode==304){
 
                      PublicKey publicKey   = Helper.getKeyFromPEM(pubkey_user);
                     String sig_recipient_data = new String(sender+content_string+iv_string+key_recipient_enc_string);
