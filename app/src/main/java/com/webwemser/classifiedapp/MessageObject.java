@@ -53,4 +53,15 @@ public class MessageObject {
         this.sender = sender;
         this.message = message;
     }
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof MessageObject){
+           MessageObject messageObject = (MessageObject) object;
+            if(messageObject.getId() == getId()
+                    && messageObject.getMessage().equals(getMessage()) && messageObject.getSender().equals(getSender())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

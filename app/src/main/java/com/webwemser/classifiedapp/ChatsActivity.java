@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.GetLastMessageRequest;
+import com.webwemser.classifiedapp.requests.GetMessagesRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.Singleton;
@@ -206,7 +207,7 @@ public class ChatsActivity extends AppCompatActivity {
             while (isRunning){
                 try{
                     Thread.sleep(5000);
-                    Log.i("Update Messages", " after 5 secs.");
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
