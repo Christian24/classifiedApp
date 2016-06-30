@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -38,6 +39,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText userName, password;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,19 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         userName = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
+        progressBar = (ProgressBar)findViewById(R.id.progess_login);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        hideProgressbar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideProgressbar();
     }
 
     public void startRegister(View view) {
@@ -54,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void startLogin(View view) {
         if (userName.getText() != null && password.getText() != null) {
+            progressBar.setVisibility(View.VISIBLE);
             login(userName.getText().toString(), password.getText().toString());
         }
     }
@@ -140,10 +156,20 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (InvalidKeySpecException e) {
                     e.printStackTrace();
                 }
+
                 return json;
             }
         };
         RequestSingleton.getInstance(getApplicationContext()).add(request);
+    }
+
+    private void hideProgressbar(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void startChatActivity(){
