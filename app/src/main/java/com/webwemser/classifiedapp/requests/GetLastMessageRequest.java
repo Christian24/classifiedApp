@@ -15,8 +15,10 @@ import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 
 /**
@@ -24,16 +26,20 @@ import java.util.HashMap;
  */
 public class GetLastMessageRequest {
 
-    public void start(final Context context, final SwipeRefreshLayout swipe) throws NoSuchAlgorithmException {
+    public void start(final Context context, final SwipeRefreshLayout swipe) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         String login = Singleton.getSingleton().getLogin();
-        int timestamp = Helper.getTimestamp();
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        digest.update(Helper.getBytes(login));
-        byte[] digitale_signatur = digest.digest(Helper.getBytes(new Integer(timestamp).toString()));
+        String timestamp = Integer.toString( Helper.getTimestamp());
+        Singleton singleton = Singleton.getSingleton();
+
+        String signatur_String = new String(login + timestamp);
+
+        byte[] digitale_signatur = Helper.generateSignature(singleton.getPrivate_key(),signatur_String);
+        String digitale_signaturString = Helper.getString(Helper.base64Encoding(digitale_signatur));
+
         HashMap<String,String> map = new HashMap<>();
         map.put("login",login);
-        map.put("timestamp",Integer.toString(timestamp));
-        map.put("digitale_signatur",Helper.getString(digitale_signatur));
+        map.put("timestamp",timestamp);
+        map.put("digitale_signatur",digitale_signaturString);
 
         JSONObject json = new JSONObject(map);
         Uri url = Helper.getUriBuilder().appendPath(login).appendPath("message").build();
