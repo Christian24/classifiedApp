@@ -5,21 +5,17 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.ExploreByTouchHelper;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.webwemser.classifiedapp.requests.GetLastMessageRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.AESCBC;
 import com.webwemser.classifiedapp.singleton.AESCBCResult;
@@ -27,14 +23,13 @@ import com.webwemser.classifiedapp.requests.Delete;
 import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.RSACipher;
 import com.webwemser.classifiedapp.singleton.Singleton;
-
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
-
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -185,42 +180,46 @@ public class SendActivity extends AppCompatActivity {
                 map.put(SENDER, Message.getInstance().getConversations().get(username).get(i).getSender());
                 map.put(MESSAGE, Message.getInstance().getConversations().get(username).get(i).getMessage());
                 chatList.add(map);
+        list = (ListView)findViewById(R.id.list_messages);
+        // Getting adapter by passing xml data ArrayList
+        adapter = new MyChatAdapter(this, chatList);
+        list.setAdapter(adapter);
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                // TODO Auto-generated method stub
+                new AlertDialog.Builder(SendActivity.this)
+                        .setTitle("Nachricht löschen")
+                        .setMessage("Möchten sie die Nachricht wirklich löschen?")
+                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    Delete.DeleteMessage(username);
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (SignatureException e) {
+                                    e.printStackTrace();
+                                } catch (InvalidKeyException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp))
+                        .show();
+                Log.v("Long clicked", "Position: " + pos);
+                return true;
             }
-            list = (ListView)findViewById(R.id.list_messages);
-            // Getting adapter by passing xml data ArrayList
-            adapter = new MyChatAdapter(this, chatList);
-            list.setAdapter(adapter);
-            list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    // TODO Auto-generated method stub
-                    new AlertDialog.Builder(SendActivity.this)
-                            .setTitle("Nachricht löschen")
-                            .setMessage("Möchten sie die Nachricht wirklich löschen?")
-                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    try{
-                                        Delete.DeleteMessage(username);
-                                    }
-                                    catch (Exception e){
-                                        e.printStackTrace();
-                                    }
-
-                                }
-                            })
-                            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // do nothing
-                                }
-                            })
-                            .setIcon(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp))
-                            .show();
-                    Log.v("Long clicked","Position: " + pos);
-                    return true;
-                }
-            });
+        });
+            }
         }
     }
+
+
 
     class RefreshAsync extends AsyncTask<Void, Integer, String>
     {
