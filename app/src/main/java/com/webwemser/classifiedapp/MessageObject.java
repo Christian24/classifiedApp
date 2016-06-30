@@ -48,4 +48,9 @@ public class MessageObject {
         this.sender = sender;
         this.message = message;
     }
+    public MessageObject( String sender, String message) {
+
+        this.sender = sender;
+        this.message = message;
+    }
 }

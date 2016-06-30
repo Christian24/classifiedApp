@@ -41,8 +41,15 @@ private static Message instance;
     instance = new Message();
         return instance;
     }
-    public void addMessageSelf(MessageObject messageObject){
+    public void addMessageSelf(MessageObject messageObject, String recipient){
 
+        Log.i("Sender", recipient);
+        if(!conversations.containsKey(recipient)) {
+            conversations.put(recipient, new ArrayList<MessageObject>());
+        }
+        ArrayList<MessageObject> conversation = conversations.get(recipient);
+        if(!conversation.contains(messageObject))
+            conversation.add(messageObject);
     }
     public void addMessage(MessageObject messageObject) {
         String sender = messageObject.getSender();
@@ -51,7 +58,7 @@ private static Message instance;
             conversations.put(sender, new ArrayList<MessageObject>());
         }
         ArrayList<MessageObject> conversation = conversations.get(sender);
-
+        if(!conversation.contains(messageObject))
         conversation.add(messageObject);
 
     }
