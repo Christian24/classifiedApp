@@ -1,4 +1,4 @@
-package com.webwemser.classifiedapp.singleton;
+package com.webwemser.classifiedapp.requests;
 
 import android.net.Uri;
 

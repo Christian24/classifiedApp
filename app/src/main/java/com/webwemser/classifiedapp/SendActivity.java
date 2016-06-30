@@ -19,7 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.AESCBC;
 import com.webwemser.classifiedapp.singleton.AESCBCResult;
-import com.webwemser.classifiedapp.singleton.Delete;
+import com.webwemser.classifiedapp.requests.Delete;
 import com.webwemser.classifiedapp.singleton.RSACipher;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
@@ -29,7 +29,6 @@ import java.io.UnsupportedEncodingException;
 
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
