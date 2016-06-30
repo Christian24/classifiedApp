@@ -45,6 +45,7 @@ private static Message instance;
     }
     public void addMessage(MessageObject messageObject) {
         String sender = messageObject.getSender();
+        Log.i("Sender", sender);
         if(!conversations.containsKey(sender)) {
             conversations.put(sender, new ArrayList<MessageObject>());
         }
@@ -114,7 +115,7 @@ private static Message instance;
                     }
                 }
                 catch (Exception e){
-
+                    e.printStackTrace();
                 }
                 return json;
             }

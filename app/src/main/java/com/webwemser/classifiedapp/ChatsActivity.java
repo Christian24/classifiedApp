@@ -63,9 +63,11 @@ public class ChatsActivity extends AppCompatActivity {
     }
 
     private void showChats(){
-        Log.i("Messages size", Message.getInstance().conversations.size()+"");
+        for(String name: Message.getInstance().getConversations().keySet()){
+            Log.i("Sender", name);
+        }
         ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
-        for(String name: Message.getInstance().conversations.keySet()){
+        for(String name: Message.getInstance().getConversations().keySet()){
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(CONTACT, name);
             chatList.add(map);
