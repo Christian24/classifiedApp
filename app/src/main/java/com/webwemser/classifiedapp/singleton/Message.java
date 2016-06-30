@@ -84,12 +84,12 @@ private static Message instance;
             @Override
             public void onErrorResponse(VolleyError error) {
                 String body;
-                //get status code here
-                String statusCode = String.valueOf(error.networkResponse.statusCode);
-                //get response body and parse with appropriate encoding
-                Log.i("Log VolleyError", statusCode);
                 if (error.networkResponse.data != null) {
                     try {
+                        //get status code here
+                        String statusCode = String.valueOf(error.networkResponse.statusCode);
+                        //get response body and parse with appropriate encoding
+                        Log.i("Log VolleyError", statusCode);
                         body = new String(error.networkResponse.data, "UTF-8");
                         Log.i("Log VolleyError", body);
                     } catch (UnsupportedEncodingException e) {

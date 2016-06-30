@@ -1,6 +1,7 @@
 package com.webwemser.classifiedapp.requests;
 
 import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -37,15 +38,16 @@ public class Delete {
         byte[] digitale_signatur = new byte[0];
 
         digitale_signatur = Helper.generateSignature(singleton.getPrivate_key(),signatur_String);
+        String digitale_signaturString = Base64.encodeToString(digitale_signatur,Base64.DEFAULT);
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("login", username);
         params.put("timestamp", timestamp);
-        params.put("digitale_signatur", digitale_signatur.toString());
+        params.put("digitale_signatur", digitale_signaturString);
 
         JSONObject json = new JSONObject(params);
         Uri url = Helper.getUriBuilder().appendPath(username).appendPath("message").build();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url.toString(),json,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE,url.toString(),json,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("Log Response ", response.toString());
@@ -70,5 +72,18 @@ public class Delete {
                 }
             }
         });
+        {
+            /**@Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                Log.i("Log ParseResponse", response.statusCode+"");
+                int mStatusCode = response.statusCode;
+                if(mStatusCode==200){
+
+            }
+            MessageObject messageObject = new MessageObject(Singleton.getSingleton().getLogin(),msg);
+            Message.getInstance().addMessageSelf(messageObject,username);
+            return super.parseNetworkResponse(response);
+        }**/
+        };
     }
 }
