@@ -94,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
                     byte[] salt_masterkey = Helper.base64Decoding( json.result.getString("salt_masterkey"));
 
                     instance.setSalt_masterkey(salt_masterkey);
-                    byte[] pubkey_user =Helper.base64Decoding( json.result.getString("pubkey_user"));
-                    instance.setPubkey(Helper.generatePublicKey(pubkey_user));
+                    String pubkey_user = json.result.getString("pubkey_user");
+                    instance.setPubkey(Helper.getKeyFromPEM(pubkey_user));
                    // Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
                     byte[] privkey = Helper.base64Decoding(privkey_user_enc);
@@ -136,9 +136,8 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (IllegalBlockSizeException e) {
                     e.printStackTrace();
                     e.printStackTrace();
-                } /**catch (NoSuchProviderException e) {
-                 e.printStackTrace();
-                 }**/ catch (IOException e) {
+                } catch (IOException e) {
+                    e.printStackTrace();
                 } catch (InvalidKeySpecException e) {
                     e.printStackTrace();
                 }

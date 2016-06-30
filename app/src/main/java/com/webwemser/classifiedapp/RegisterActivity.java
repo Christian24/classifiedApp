@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                 Singleton.getSingleton().setSalt_masterkey(bytes);
 
                 Singleton.getSingleton().setLogin(userName);
-                String publicKeyString = Helper.base64Encoding(publicKey.getEncoded());
+                String publicKeyString = Helper.getPEMStringFromKey(publicKey);
                 params.put("pubkey_user",publicKeyString);
 
                 Singleton.getSingleton().setPubkey(publicKey);

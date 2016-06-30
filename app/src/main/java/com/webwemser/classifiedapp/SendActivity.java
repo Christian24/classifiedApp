@@ -73,7 +73,7 @@ public class SendActivity extends AppCompatActivity {
             byte[] iv = result.getIv();
             String iv_string = Helper.base64Encoding(iv);
 
-            PublicKey rsaPublicKey = Helper.generatePublicKey(Helper.base64Decoding(publicKey));
+            PublicKey rsaPublicKey = Helper.getKeyFromPEM(publicKey);
 
             RSACipher rsaCipher = RSACipher.getInstance();
             byte[] key_recipient_enc = rsaCipher.encrypt(rsaPublicKey,key_recipient);
@@ -88,7 +88,7 @@ public class SendActivity extends AppCompatActivity {
             byte[] sig_service = Helper.generateSignature(singleton.getPrivate_key(), sig_serviceToProcess);
             String sig_service_String = Helper.base64Encoding(sig_service);
 
-            boolean correct = Helper.verifySignature(Singleton.getSingleton().getPubkey(),sig_service);
+            boolean correct = Helper.verifySignature(Singleton.getSingleton().getPubkey(),sig_serviceToProcess.getBytes(),sig_service);
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
             Log.i("sender", Singleton.getSingleton().getLogin());

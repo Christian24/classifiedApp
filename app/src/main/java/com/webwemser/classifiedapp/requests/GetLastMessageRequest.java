@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
 import java.security.SignatureException;
 import java.util.HashMap;
 
@@ -38,7 +39,16 @@ public class GetLastMessageRequest {
 
         byte[] digitale_signatur = Helper.generateSignature(singleton.getPrivate_key(),signatur_String);
         String digitale_signaturString = Base64.encodeToString(digitale_signatur,Base64.DEFAULT);
-        boolean ok = Helper.verifySignature(singleton.getPubkey(),digitale_signatur);
+        Signature sig = Signature.getInstance("SHA256withRSA");
+                sig.initSign(singleton.getPrivate_key());
+
+                 sig.update(signatur_String.getBytes());
+        byte[] sig_service = sig.sign();
+
+        Signature s1 = Signature.getInstance("SHA256withRSA");
+        s1.initVerify(singleton.getPubkey());
+
+        boolean ok = Helper.verifySignature(singleton.getPubkey(),signatur_String.getBytes(),sig_service);
         HashMap<String,String> map = new HashMap<>();
         map.put("login",login);
         map.put("timestamp",timestamp);
