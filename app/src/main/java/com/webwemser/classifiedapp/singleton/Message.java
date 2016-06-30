@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.Helper;
+import com.webwemser.classifiedapp.MessageObject;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 
 import org.json.JSONException;
@@ -25,23 +26,31 @@ import java.util.HashMap;
  */
 public class Message extends Application {
 private static Message instance;
-    protected HashMap<String,ArrayList<HashMap<String,String>>> conversations;
+    protected HashMap<String,ArrayList<MessageObject>> conversations;
+
+    public HashMap<String, ArrayList<MessageObject>> getConversations() {
+        return conversations;
+    }
+
     private Message() {
-        conversations = new HashMap<String,ArrayList<HashMap<String,String>>>();
+        conversations = new HashMap<String,ArrayList<MessageObject>>();
     }
     public static Message getInstance() {
     if(instance == null)
     instance = new Message();
         return instance;
     }
-    public void addMessage(String message, String recipient) {
-        if(!conversations.containsKey(recipient)) {
-            conversations.put(recipient, new ArrayList<HashMap<String, String>>());
+    public void addMessageSelf(MessageObject messageObject){
+
+    }
+    public void addMessage(MessageObject messageObject) {
+        String sender = messageObject.getSender();
+        if(!conversations.containsKey(sender)) {
+            conversations.put(sender, new ArrayList<MessageObject>());
         }
-        ArrayList<HashMap<String,String>> conversation = conversations.get(recipient);
-        HashMap<String,String> newMessage = new HashMap<>();
-        newMessage.put(recipient,message);
-        conversation.add(newMessage);
+        ArrayList<MessageObject> conversation = conversations.get(sender);
+
+        conversation.add(messageObject);
 
     }
 
@@ -99,7 +108,8 @@ private static Message instance;
                        byte[] key_recipient = rsaCipher.decrypt(publicKey,key_recipient_enc);
                         AESCBC aescbc = AESCBC.getInstance();
                         byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
-                        addMessage(new String(message),sender);
+                        MessageObject messageObject = new MessageObject(id,sender,new String(message));
+                        addMessage(messageObject);
                     }
                     }
                 }
