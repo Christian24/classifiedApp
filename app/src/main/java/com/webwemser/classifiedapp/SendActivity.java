@@ -176,7 +176,7 @@ public class SendActivity extends AppCompatActivity {
                         .setMessage("Möchten sie die Nachricht wirklich löschen?")
                         .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
+                                deleteSpecificMessage();
                             }
                         })
                         .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
@@ -190,5 +190,11 @@ public class SendActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void deleteSpecificMessage() {
+        HashMap<String,String> params = new HashMap<String,String>();
+        params.put("login",username);
+        JSONObject json = new JSONObject(params);
     }
 }
