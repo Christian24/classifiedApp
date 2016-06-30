@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.webwemser.classifiedapp.singleton.Singleton;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -44,7 +47,7 @@ public class MyChatAdapter extends BaseAdapter {
         HashMap<String, String> meet;
         meet = data.get(position);
         TextView message;
-        if(meet.get(SendActivity.SENDER).equals("Self")){
+        if(meet.get(SendActivity.SENDER).equals(Singleton.getSingleton().getLogin())){
             vi = inflater.inflate(R.layout.message_sent, null);
             message = (TextView)vi.findViewById(R.id.textSent);
         }

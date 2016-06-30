@@ -3,7 +3,9 @@ package com.webwemser.classifiedapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,10 +18,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.webwemser.classifiedapp.requests.GetLastMessageRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.AESCBC;
 import com.webwemser.classifiedapp.singleton.AESCBCResult;
 import com.webwemser.classifiedapp.requests.Delete;
+import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.RSACipher;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
@@ -39,6 +43,7 @@ public class SendActivity extends AppCompatActivity {
     private MyChatAdapter adapter;
     private ListView list;
     private String username, publicKey;
+    private boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +55,23 @@ public class SendActivity extends AppCompatActivity {
         Log.i("Pubkey getIntent", publicKey);
         this.setTitle(username);
         message.setHint("Message to " + username);
-        showChats();
+        showMessages();
+        isRunning = true;
+        new RefreshAsync().execute();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        isRunning = false;
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        isRunning = true;
+        new RefreshAsync().execute();
+
     }
 
     public void send(View v){
@@ -152,13 +173,13 @@ public class SendActivity extends AppCompatActivity {
         }
     }
 
-    private void showChats(){
+    private void showMessages(){
         ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
 
-        for(int i = 1; i <= 100; i++){
+        for(int i = 0; i < Message.getInstance().getConversations().get(username).size(); i++){
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put(SENDER, "Matthias");
-            map.put(MESSAGE, "Hallo "+i);
+            map.put(SENDER, Message.getInstance().getConversations().get(username).get(i).getSender());
+            map.put(MESSAGE, Message.getInstance().getConversations().get(username).get(i).getMessage());
             chatList.add(map);
         }
         list = (ListView)findViewById(R.id.list_messages);
@@ -188,5 +209,27 @@ public class SendActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    class RefreshAsync extends AsyncTask<Void, Integer, String>
+    {
+
+        protected String doInBackground(Void...arg0) {
+            while (isRunning){
+                try{
+                    Thread.sleep(2000);
+
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+            }
+            return "";
+        }
+
+        protected void onPostExecute(String result) {
+
+        }
     }
 }
