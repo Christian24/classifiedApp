@@ -163,6 +163,8 @@ public class SendActivity extends AppCompatActivity {
                     if(mStatusCode==201){
 
                     }
+                    MessageObject messageObject = new MessageObject(Singleton.getSingleton().getLogin(),msg);
+                    Message.getInstance().addMessageSelf(messageObject,username);
                     return super.parseNetworkResponse(response);
                 }
             };
