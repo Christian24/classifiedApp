@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -80,21 +81,21 @@ private static Message instance;
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 int mStatusCode = response.statusCode;
-                String pubkey_user = "";
+                byte[] pubkey_user;
                 Log.i("Statuscode", response.statusCode+"");
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
-                    pubkey_user = json.result.getString("pubkey_user");
-                    Log.i("Pubkey_User", pubkey_user);
+                    pubkey_user = Helper.base64Decoding( json.result.getString("pubkey_user"));
+                  //  Log.i("Pubkey_User", pubkey_user);
                     if (mStatusCode==200){
-                      Key key= Helper.getKeyFromPEM( pubkey_user);
-                      PublicKey publicKey   = Helper.generatePublicKey(key);
+
+                     RSAPublicKey publicKey   = Helper.generatePublicKey(pubkey_user);
                      // byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(iv),Helper.getBytes(key_recipient_enc));
 
                     if( Helper.verifySignature(publicKey,sig_recipient)) {
                         //Match
                         RSACipher rsaCipher = RSACipher.getInstance();
-                       byte[] key_recipient = rsaCipher.decrypt(pubkey_user,key_recipient_enc);
+                       byte[] key_recipient = rsaCipher.decrypt(publicKey,key_recipient_enc);
                         AESCBC aescbc = AESCBC.getInstance();
                         byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
                         addMessage(new String(message),sender);

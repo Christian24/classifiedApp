@@ -141,22 +141,15 @@ public class Helper {
             return null;
         }
     }
-    public static RSAPublicKey generatePublicKey(Key key) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public static RSAPublicKey generatePublicKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory keyFactory = null;
 
         keyFactory = KeyFactory.getInstance("RSA");
 
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(key.getEncoded());
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
         return  (RSAPublicKey) keyFactory.generatePublic(spec);
     }
-    public static RSAPrivateKey generatePrivateKey(Key key) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        KeyFactory keyFactory = null;
 
-        keyFactory = KeyFactory.getInstance("RSA");
-
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(key.getEncoded());
-        return  (RSAPrivateKey) keyFactory.generatePrivate(spec);
-    }
     public static RSAPrivateKey generatePrivateKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory keyFactory = null;
 
