@@ -1,6 +1,7 @@
 package com.webwemser.classifiedapp;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.webwemser.classifiedapp.requests.GetLastMessageRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
@@ -30,6 +32,8 @@ public class ChatsActivity extends AppCompatActivity {
     private EditText username;
     private ListView list;
     private MyListAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
+    private GetLastMessageRequest lastMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,16 @@ public class ChatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chats);
         username = (EditText)findViewById(R.id.username);
         this.setTitle("Chats");
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        createSwipeLayout();
+        lastMessage = new GetLastMessageRequest();
+        try {
+            lastMessage.start(getApplicationContext(), new SwipeRefreshLayout(getApplicationContext()));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public void startChat(View view) {
@@ -126,5 +140,25 @@ public class ChatsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void createSwipeLayout(){
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    lastMessage.start(getApplicationContext(), swipeContainer);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 }

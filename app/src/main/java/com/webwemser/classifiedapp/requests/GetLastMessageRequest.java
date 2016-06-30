@@ -2,6 +2,7 @@ package com.webwemser.classifiedapp.requests;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -23,10 +24,10 @@ import java.util.HashMap;
  */
 public class GetLastMessageRequest {
 
-    public void start(final Context context) throws NoSuchAlgorithmException {
+    public void start(final Context context, final SwipeRefreshLayout swipe) throws NoSuchAlgorithmException {
         String login = Singleton.getSingleton().getLogin();
         int timestamp = Helper.getTimestamp();
-       MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
         digest.update(Helper.getBytes(login));
         byte[] digitale_signatur = digest.digest(Helper.getBytes(new Integer(timestamp).toString()));
         HashMap<String,String> map = new HashMap<>();
@@ -49,16 +50,17 @@ public class GetLastMessageRequest {
                 if(error.networkResponse!=null){
                     String statusCode = String.valueOf(error.networkResponse.statusCode);
                     //get response body and parse with appropriate encoding
-                    Log.i("Log VolleyError", statusCode);
+                    Log.i("Error GetLastMessage", statusCode);
                     if(error.networkResponse.data!=null) {
                         try {
                             body = new String(error.networkResponse.data,"UTF-8");
-                            Log.i("Log VolleyError", body);
+                            Log.i("Error GetLastMessage", body);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
                 }
+                swipe.setRefreshing(false);
             }
         })
         {
@@ -74,10 +76,10 @@ public class GetLastMessageRequest {
                         e.printStackTrace();
                     }
                 }
+                swipe.setRefreshing(false);
                 return json;
             }
         };
-
         RequestSingleton.getInstance(context).add(request);
 
 
