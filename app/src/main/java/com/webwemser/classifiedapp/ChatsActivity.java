@@ -1,6 +1,7 @@
 package com.webwemser.classifiedapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,14 +38,18 @@ public class ChatsActivity extends AppCompatActivity {
     private MyListAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
     private GetLastMessageRequest lastMessage;
+    private ProgressBar progressBar;
+    private boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats);
+        progressBar = (ProgressBar)findViewById(R.id.progess);
         username = (EditText)findViewById(R.id.username);
         this.setTitle("Chats - " +Singleton.getSingleton().getLogin());
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        isRunning = true;
         createSwipeLayout();
         lastMessage = new GetLastMessageRequest();
         try {
@@ -52,12 +58,30 @@ public class ChatsActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
+        try {
+            Thread.sleep(1000);
+            showChats();
+            progressBar.setVisibility(View.GONE);
+            swipeContainer.setVisibility(View.VISIBLE);
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        new RefreshAsync().execute();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        isRunning = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         showChats();
+        isRunning = true;
+        new RefreshAsync().execute();
     }
 
     public void startChat(View view) {
@@ -173,5 +197,33 @@ public class ChatsActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+    }
+
+    class RefreshAsync extends AsyncTask<Void, Integer, String>
+    {
+
+        protected String doInBackground(Void...arg0) {
+            while (isRunning){
+                try{
+                    Thread.sleep(5000);
+                    Log.i("Update Messages", " after 5 secs.");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showChats();
+                        }
+                    });
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+            }
+            return "";
+        }
+
+        protected void onPostExecute(String result) {
+
+        }
     }
 }

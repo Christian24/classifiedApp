@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.ExploreByTouchHelper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -176,41 +178,48 @@ public class SendActivity extends AppCompatActivity {
     }
 
     private void showMessages(){
-        ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
-
-        for(int i = 0; i < Message.getInstance().getConversations().get(username).size(); i++){
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put(SENDER, Message.getInstance().getConversations().get(username).get(i).getSender());
-            map.put(MESSAGE, Message.getInstance().getConversations().get(username).get(i).getMessage());
-            chatList.add(map);
-        }
-        list = (ListView)findViewById(R.id.list_messages);
-        // Getting adapter by passing xml data ArrayList
-        adapter = new MyChatAdapter(this, chatList);
-        list.setAdapter(adapter);
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                // TODO Auto-generated method stub
-                new AlertDialog.Builder(SendActivity.this)
-                        .setTitle("Nachricht löschen")
-                        .setMessage("Möchten sie die Nachricht wirklich löschen?")
-                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Delete.DeleteMessage(username);
-                            }
-                        })
-                        .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp))
-                        .show();
-                Log.v("Long clicked","Position: " + pos);
-                return true;
+        if(Message.getInstance().getConversations().get(username)!=null){
+            ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
+            for(int i = 0; i < Message.getInstance().getConversations().get(username).size(); i++){
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put(SENDER, Message.getInstance().getConversations().get(username).get(i).getSender());
+                map.put(MESSAGE, Message.getInstance().getConversations().get(username).get(i).getMessage());
+                chatList.add(map);
             }
-        });
+            list = (ListView)findViewById(R.id.list_messages);
+            // Getting adapter by passing xml data ArrayList
+            adapter = new MyChatAdapter(this, chatList);
+            list.setAdapter(adapter);
+            list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                    // TODO Auto-generated method stub
+                    new AlertDialog.Builder(SendActivity.this)
+                            .setTitle("Nachricht löschen")
+                            .setMessage("Möchten sie die Nachricht wirklich löschen?")
+                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try{
+                                        Delete.DeleteMessage(username);
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            })
+                            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp))
+                            .show();
+                    Log.v("Long clicked","Position: " + pos);
+                    return true;
+                }
+            });
+        }
     }
 
     class RefreshAsync extends AsyncTask<Void, Integer, String>
