@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -12,11 +13,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.Helper;
 import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.Singleton;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.HashMap;
