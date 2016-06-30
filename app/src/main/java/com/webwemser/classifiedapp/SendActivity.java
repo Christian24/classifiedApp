@@ -218,7 +218,12 @@ public class SendActivity extends AppCompatActivity {
             while (isRunning){
                 try{
                     Thread.sleep(2000);
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showMessages();
+                        }
+                    });
                 }
                 catch (InterruptedException e){
                     e.printStackTrace();
