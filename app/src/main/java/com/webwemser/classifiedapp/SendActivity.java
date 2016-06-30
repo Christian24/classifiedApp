@@ -58,13 +58,13 @@ public class SendActivity extends AppCompatActivity {
         }
     }
 
-    private void sendMessage(String message){
+    private void sendMessage(final String msg){
         try{
             Singleton singleton = Singleton.getSingleton();
             SecureRandom random = new SecureRandom();
             AESCBC aescbc = AESCBC.getInstance();
             byte[] key_recipient = random.generateSeed(16);
-            AESCBCResult result = aescbc.encrypt(key_recipient,Helper.getBytes(message));
+            AESCBCResult result = aescbc.encrypt(key_recipient,Helper.getBytes(msg));
 
             byte[] message_enc = result.getData();
             String messageString = Helper.getString(Helper.base64Encoding(message_enc));
@@ -135,8 +135,7 @@ public class SendActivity extends AppCompatActivity {
                     Log.i("Log ParseResponse", response.statusCode+"");
                     int mStatusCode = response.statusCode;
                     if(mStatusCode==201){
-
-
+                        message.setText("");
                     }
                     return super.parseNetworkResponse(response);
                 }
