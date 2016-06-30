@@ -2,12 +2,9 @@ package com.webwemser.classifiedapp.singleton;
 
 import android.app.Application;
 
-import com.webwemser.classifiedapp.Helper;
-
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
+import java.security.PublicKey;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -55,7 +52,7 @@ public class RSACipher extends Application {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public byte[] encrypt(RSAPublicKey publicKey, byte[] data) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public byte[] encrypt(PublicKey publicKey, byte[] data) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = getCipher();
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(data);
@@ -74,7 +71,7 @@ public class RSACipher extends Application {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-    public byte[] decrypt(RSAPublicKey publicKey, byte[] data) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public byte[] decrypt(PublicKey publicKey, byte[] data) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, NoSuchPaddingException {
         Cipher cipher = getCipher();
         cipher.init(Cipher.DECRYPT_MODE, publicKey);
         return cipher.doFinal(data);

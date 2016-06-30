@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class SendActivity extends AppCompatActivity {
             byte[] iv = result.getIv();
             String iv_string = Helper.base64Encoding(iv);
 
-            RSAPublicKey rsaPublicKey = Helper.generatePublicKey(Helper.base64Decoding(publicKey));
+            PublicKey rsaPublicKey = Helper.generatePublicKey(Helper.base64Decoding(publicKey));
 
             RSACipher rsaCipher = RSACipher.getInstance();
             byte[] key_recipient_enc = rsaCipher.encrypt(rsaPublicKey,key_recipient);

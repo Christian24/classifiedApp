@@ -16,9 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -86,11 +84,10 @@ private static Message instance;
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
                     pubkey_user = Helper.base64Decoding( json.result.getString("pubkey_user"));
-                  //  Log.i("Pubkey_User", pubkey_user);
+
                     if (mStatusCode==200){
 
-                     RSAPublicKey publicKey   = Helper.generatePublicKey(pubkey_user);
-                     // byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(iv),Helper.getBytes(key_recipient_enc));
+                     PublicKey publicKey   = Helper.generatePublicKey(pubkey_user);
 
                     if( Helper.verifySignature(publicKey,sig_recipient)) {
                         //Match

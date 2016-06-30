@@ -2,37 +2,25 @@ package com.webwemser.classifiedapp;
 
 import android.net.Uri;
 import android.util.Base64;
-import android.util.Log;
-
-
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.openssl.jcajce.JcaPEMWriter;
-import org.spongycastle.util.io.pem.PemObject;
-import org.spongycastle.util.io.pem.PemReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -99,64 +87,23 @@ public class Helper {
         builder.scheme("https").authority("webengserver.herokuapp.com");
         return builder;
     }
-    public static String getPEMStringFromKey(Key key) {
-        StringWriter pemStrWriter = new StringWriter();
 
-      // PemWriter pemWriter = new PemWriter(pemStrWriter);
-        JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemStrWriter);
-        try {
-
-            //pemWriter.writeObject(keyPair);
-            // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
-            jcaPEMWriter.writeObject(key);
-            jcaPEMWriter.close();
-            //  pemWriter.flush();
-            // pemWriter.close();
-
-        } catch (IOException e) {
-            Log.i("Caught exception:" , e.getMessage());
-            return "";
-        }
-
-        return pemStrWriter.toString();
-    }
-    public static Key getKeyFromPEM(String key) {
-        StringWriter pemStrWriter = new StringWriter();
-        StringReader stringReader = new StringReader(key);
-        // PemWriter pemWriter = new PemWriter(pemStrWriter);
-        PemReader pemReader = new PemReader(stringReader);
-
-        try {
-            //pemWriter.writeObject(keyPair);
-            // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
-            PemObject obj = pemReader.readPemObject();
-            pemReader.close();
-           // Log.i("PEM", Helper.getString(obj.getContent()));
-            return  new SecretKeySpec(obj.getContent(), 0, obj.getContent().length, "RSA");
-            //  pemWriter.flush();
-            // pemWriter.close();
-
-        } catch (IOException e) {
-            Log.i("Caught exception:" , e.getMessage());
-            return null;
-        }
-    }
-    public static RSAPublicKey generatePublicKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public static PublicKey generatePublicKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory keyFactory = null;
 
         keyFactory = KeyFactory.getInstance("RSA");
 
         X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
-        return  (RSAPublicKey) keyFactory.generatePublic(spec);
+        return keyFactory.generatePublic(spec);
     }
 
-    public static RSAPrivateKey generatePrivateKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        KeyFactory keyFactory = null;
+    public static PrivateKey generatePrivateKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
 
-        keyFactory = KeyFactory.getInstance("RSA");
 
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
-        return  (RSAPrivateKey) keyFactory.generatePrivate(spec);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+        EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
+        return  keyFactory.generatePrivate(spec);
     }
 
     public static int getTimestamp() {
