@@ -39,16 +39,9 @@ public class GetLastMessageRequest {
 
         byte[] digitale_signatur = Helper.generateSignature(singleton.getPrivate_key(),signatur_String);
         String digitale_signaturString = Base64.encodeToString(digitale_signatur,Base64.DEFAULT);
-        Signature sig = Signature.getInstance("SHA256withRSA");
-                sig.initSign(singleton.getPrivate_key());
 
-                 sig.update(signatur_String.getBytes());
-        byte[] sig_service = sig.sign();
 
-        Signature s1 = Signature.getInstance("SHA256withRSA");
-        s1.initVerify(singleton.getPubkey());
-
-        boolean ok = Helper.verifySignature(singleton.getPubkey(),signatur_String.getBytes(),sig_service);
+        boolean ok = Helper.verifySignature(singleton.getPubkey(),signatur_String.getBytes(),digitale_signatur);
         HashMap<String,String> map = new HashMap<>();
         map.put("login",login);
         map.put("timestamp",timestamp);
@@ -56,7 +49,7 @@ public class GetLastMessageRequest {
 
         JSONObject json = new JSONObject(map);
         Uri url = Helper.getUriBuilder().appendPath(login).appendPath("message").build();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,url.toString(),json,new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,url.toString(),json,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("Log Response ", response.toString());
