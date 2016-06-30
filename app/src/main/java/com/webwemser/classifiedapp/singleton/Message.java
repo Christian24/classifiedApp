@@ -91,7 +91,7 @@ private static Message instance;
                       PublicKey publicKey   = Helper.generatePublicKey(key);
                      // byte[] new_sig_recipient=  Helper.generateSig_recipient(key,sender,Helper.getBytes(content_enc),Helper.getBytes(iv),Helper.getBytes(key_recipient_enc));
 
-                    if( Helper.generateSig_recipient(publicKey,sig_recipient)) {
+                    if( Helper.verifySignature(publicKey,sig_recipient)) {
                         //Match
                         RSACipher rsaCipher = RSACipher.getInstance();
                        byte[] key_recipient = rsaCipher.decrypt(pubkey_user,key_recipient_enc);

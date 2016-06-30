@@ -25,7 +25,7 @@ import com.webwemser.classifiedapp.singleton.Singleton;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,37 +60,46 @@ public class SendActivity extends AppCompatActivity {
 
     private void sendMessage(String message){
         try{
+            Singleton singleton = Singleton.getSingleton();
             SecureRandom random = new SecureRandom();
             AESCBC aescbc = AESCBC.getInstance();
             byte[] key_recipient = random.generateSeed(16);
             AESCBCResult result = aescbc.encrypt(key_recipient,Helper.getBytes(message));
 
             byte[] message_enc = result.getData();
+            String messageString = Helper.getString(Helper.base64Encoding(message_enc));
             byte[] iv = result.getIv();
+            String iv_string = Helper.getString(Helper.base64Encoding(iv));
 
             RSACipher rsaCipher = RSACipher.getInstance();
             byte[] key_recipient_enc = rsaCipher.encrypt(publicKey,key_recipient);
+            String key_recipient_encString = Helper.getString(Helper.base64Encoding(key_recipient_enc));
             String timestamp = Integer.toString(Helper.getTimestamp());
-            byte[] digital_signature = Helper.generateSig_recipient(Singleton.getSingleton().getPrivate_key(),Singleton.getSingleton().getLogin(),message_enc,iv,key_recipient_enc);
-            byte[] sig_service = Helper.generateSig_service(Singleton.getSingleton().getPrivate_key(),
-                    Singleton.getSingleton().getLogin(),message_enc,
-                    iv,key_recipient_enc,digital_signature,Helper.getBytes(timestamp),Helper.getBytes(username));
-            boolean correct = Helper.generateSig_service(Singleton.getSingleton().getPubkey(),sig_service);
+
+            String sig_recipient_StringToProcess = new String(singleton.getLogin()+ messageString + iv_string + key_recipient_encString);
+            byte[] sig_recipient = Helper.generateSignature(singleton.getPrivate_key(),sig_recipient_StringToProcess);
+            String sig_recipient_String = Helper.getString(Helper.base64Encoding(sig_recipient));
+
+            String sig_serviceToProcess= new String(singleton.getLogin()+ messageString + iv_string + key_recipient_encString + sig_recipient_String + timestamp + username);
+            byte[] sig_service = Helper.generateSignature(singleton.getPrivate_key(), sig_serviceToProcess);
+            String sig_service_String = Helper.getString(Helper.base64Encoding(sig_service));
+
+            boolean correct = Helper.verifySignature(Singleton.getSingleton().getPubkey(),sig_service);
             HashMap<String,String> params = new HashMap<String,String>();
             params.put("sender", Singleton.getSingleton().getLogin());
             Log.i("sender", Singleton.getSingleton().getLogin());
-            params.put("content_enc", Helper.base64Encoding( Helper.getString(message_enc)));
-            Log.i("content_enc", Helper.base64Encoding( Helper.getString(message_enc)));
-            params.put("key_recipient_enc", Helper.base64Encoding(Helper.getString(key_recipient_enc)));
-            Log.i("key_recipient_enc", Helper.base64Encoding(Helper.getString(key_recipient_enc)));
-            params.put("iv", Helper.base64Encoding(Helper.getString(iv)));
-            Log.i("iv", Helper.base64Encoding(Helper.getString(iv)));
-            params.put("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
-            Log.i("sig_recipient", Helper.base64Encoding(Helper.getString(digital_signature)));
+            params.put("content_enc", messageString);
+            Log.i("content_enc", messageString);
+            params.put("key_recipient_enc", key_recipient_encString);
+            Log.i("key_recipient_enc", key_recipient_encString);
+            params.put("iv", iv_string);
+            Log.i("iv", iv_string);
+            params.put("sig_recipient", sig_recipient_String);
+            Log.i("sig_recipient", sig_recipient_String);
             params.put("timestamp", timestamp);
             Log.i("Timestamp", timestamp);
-            params.put("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
-            Log.i("sig_service", Helper.base64Encoding(Helper.getString(sig_service)));
+            params.put("sig_service", sig_service_String);
+            Log.i("sig_service", sig_service_String);
             params.put("recipient", username);
             Log.i("recipient", username);
             JSONObject json = new JSONObject(params);

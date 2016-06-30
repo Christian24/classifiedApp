@@ -180,39 +180,20 @@ public class Helper {
         return (int)unixTime;
     }
 
-    public static byte[] generateSig_recipient(PrivateKey key, String identity, byte[] cipher,byte[] iv, byte[] key_recipient_enc) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA", new BouncyCastleProvider());
+    public static byte[] generateSignature(PrivateKey key, String message) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(key);
-       byte[] data = Bytes.concat(Helper.getBytes( identity),cipher,iv,key_recipient_enc);
-       signature.update(data);
+
+       signature.update(Helper.getBytes(message));
     return signature.sign();
     }
-    public static boolean generateSig_recipient(PublicKey key, byte[] signatureToVerify) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA", new BouncyCastleProvider());
+    public static boolean verifySignature(PublicKey key, byte[] signatureToVerify) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initVerify(key);
        return signature.verify(signatureToVerify);
 
     }
 
-    public static byte[] generateSig_service(PrivateKey key, String identity,byte[] cipher,byte[] iv, byte[] key_recipient_enc,
-                                             byte[] sig_recipient, byte[] timestamp, byte[] recipient) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, NoSuchProviderException {
 
-        Signature signature = Signature.getInstance("SHA256withRSA",new BouncyCastleProvider());
-        signature.initSign(key);
-        signature.update(Helper.getBytes(identity));
-        signature.update(cipher);
-        signature.update(iv);
-        signature.update(key_recipient_enc);
-        signature.update(sig_recipient);
-        signature.update(timestamp);
-        signature.update(recipient);
-        return signature.sign();
-    }
-    public static boolean generateSig_service(PublicKey key, byte[] signatureToVerify) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, NoSuchProviderException {
-        Security.addProvider(new BouncyCastleProvider());
-        Signature signature = Signature.getInstance("SHA256withRSA","BC");
-        signature.initVerify(key);
-        return signature.verify(signatureToVerify);
-    }
 
 }
