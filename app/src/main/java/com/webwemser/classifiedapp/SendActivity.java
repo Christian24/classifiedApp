@@ -55,6 +55,7 @@ public class SendActivity extends AppCompatActivity {
         String m = message.getText().toString();
         if(m.length()>0){
             sendMessage(m);
+            message.setText("");
         }
     }
 
@@ -135,7 +136,7 @@ public class SendActivity extends AppCompatActivity {
                     Log.i("Log ParseResponse", response.statusCode+"");
                     int mStatusCode = response.statusCode;
                     if(mStatusCode==201){
-                        message.setText("");
+
                     }
                     return super.parseNetworkResponse(response);
                 }
