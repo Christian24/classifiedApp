@@ -68,22 +68,22 @@ public class SendActivity extends AppCompatActivity {
             AESCBCResult result = aescbc.encrypt(key_recipient,Helper.getBytes(msg));
 
             byte[] message_enc = result.getData();
-            String messageString = Helper.getString(Helper.base64Encoding(message_enc));
+            String messageString = Helper.base64Encoding(message_enc);
             byte[] iv = result.getIv();
-            String iv_string = Helper.getString(Helper.base64Encoding(iv));
+            String iv_string = Helper.base64Encoding(iv);
 
             RSACipher rsaCipher = RSACipher.getInstance();
             byte[] key_recipient_enc = rsaCipher.encrypt(publicKey,key_recipient);
-            String key_recipient_encString = Helper.getString(Helper.base64Encoding(key_recipient_enc));
+            String key_recipient_encString =Helper.base64Encoding(key_recipient_enc);
             String timestamp = Integer.toString(Helper.getTimestamp());
 
             String sig_recipient_StringToProcess = new String(singleton.getLogin()+ messageString + iv_string + key_recipient_encString);
             byte[] sig_recipient = Helper.generateSignature(singleton.getPrivate_key(),sig_recipient_StringToProcess);
-            String sig_recipient_String = Helper.getString(Helper.base64Encoding(sig_recipient));
+            String sig_recipient_String = Helper.base64Encoding(sig_recipient);
 
             String sig_serviceToProcess= new String(singleton.getLogin()+ messageString + iv_string + key_recipient_encString + sig_recipient_String + timestamp + username);
             byte[] sig_service = Helper.generateSignature(singleton.getPrivate_key(), sig_serviceToProcess);
-            String sig_service_String = Helper.getString(Helper.base64Encoding(sig_service));
+            String sig_service_String = Helper.base64Encoding(sig_service);
 
             boolean correct = Helper.verifySignature(Singleton.getSingleton().getPubkey(),sig_service);
             HashMap<String,String> params = new HashMap<String,String>();

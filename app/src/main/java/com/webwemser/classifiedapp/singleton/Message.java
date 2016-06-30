@@ -49,11 +49,11 @@ private static Message instance;
     public void addMessage(Context context,JSONObject json) throws JSONException {
         int timestamp = json.getInt("timestamp");
         final String sender = json.getString("sender");
-        final byte[] content_enc = Helper.base64Encoding(Helper.getBytes(json.getString("content_enc")));
-        final byte[] iv = Helper.base64Decoding(Helper.getBytes(json.getString("iv")));
-        final byte[] key_recipient_enc = Helper.base64Decoding(Helper.getBytes(json.getString("key_recipient_enc")));
-        final byte[] sig_recipient = Helper.base64Decoding(Helper.getBytes(json.getString("sig_recipient")));
-        String sig_service = Helper.base64Decoding(json.getString("sig_service"));
+        final byte[] content_enc = Helper.base64Decoding(json.getString("content_enc"));
+        final byte[] iv = Helper.base64Decoding(json.getString("iv"));
+        final byte[] key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
+        final byte[] sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
+        byte[] sig_service = Helper.base64Decoding(json.getString("sig_service"));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.getUriBuilder().appendPath(sender).appendPath("pubkey").toString(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -97,7 +97,7 @@ private static Message instance;
                        byte[] key_recipient = rsaCipher.decrypt(pubkey_user,key_recipient_enc);
                         AESCBC aescbc = AESCBC.getInstance();
                         byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
-                        addMessage(Helper.getString(message),sender);
+                        addMessage(new String(message),sender);
                     }
                     }
                 }

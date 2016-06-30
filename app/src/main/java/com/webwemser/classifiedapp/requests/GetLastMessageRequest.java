@@ -3,6 +3,7 @@ package com.webwemser.classifiedapp.requests;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -36,8 +37,8 @@ public class GetLastMessageRequest {
         String signatur_String = new String(login + timestamp);
 
         byte[] digitale_signatur = Helper.generateSignature(singleton.getPrivate_key(),signatur_String);
-        String digitale_signaturString = Helper.getString(Helper.base64Encoding(digitale_signatur));
-
+        String digitale_signaturString = Base64.encodeToString(digitale_signatur,Base64.DEFAULT);
+        boolean ok = Helper.verifySignature(singleton.getPubkey(),digitale_signatur);
         HashMap<String,String> map = new HashMap<>();
         map.put("login",login);
         map.put("timestamp",timestamp);

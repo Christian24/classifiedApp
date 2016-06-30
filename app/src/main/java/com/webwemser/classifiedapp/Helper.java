@@ -5,7 +5,6 @@ import android.util.Base64;
 import android.util.Log;
 
 
-import com.google.common.primitives.Bytes;
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.openssl.jcajce.JcaPEMWriter;
@@ -15,7 +14,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
+
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -41,9 +40,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Helper {
     public static final String URL = "https://webengserver.herokuapp.com/";
-    public static String getString(byte[] bytes) {
-        return new String(bytes,StandardCharsets.ISO_8859_1);
-    }
+
 
     public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         Provider provider = new BouncyCastleProvider();
@@ -55,24 +52,18 @@ public class Helper {
     }
 
     public static byte[] getBytes(String string) {
-        return string.getBytes(StandardCharsets.ISO_8859_1);
+        return string.getBytes();
     }
 
-    public static String base64Encoding(String input) {
-        return getString(base64Encoding(getBytes(input)));
+    public static String base64Encoding(byte[] input) {
+        return Base64.encodeToString(input,Base64.DEFAULT);
     }
 
-    public static byte[] base64Encoding(byte[] input) {
-       return Base64.encode(input,Base64.NO_PADDING | Base64.NO_WRAP);
+    public static byte[] base64Decoding(String input) {
+       return Base64.decode(input,Base64.DEFAULT);
     }
 
-    public static byte[] base64Decoding(byte[] input) {
-       return Base64.decode(input,Base64.NO_PADDING | Base64.NO_WRAP);
-    }
 
-    public static String base64Decoding(String input) {
-        return getString(base64Decoding(getBytes(input)));
-    }
 
     private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
 
@@ -140,7 +131,7 @@ public class Helper {
             // pemWriter.write(new PemObject("PUBLIC KEY",key.getEncoded()));
             PemObject obj = pemReader.readPemObject();
             pemReader.close();
-            Log.i("PEM", Helper.getString(obj.getContent()));
+           // Log.i("PEM", Helper.getString(obj.getContent()));
             return  new SecretKeySpec(obj.getContent(), 0, obj.getContent().length, "RSA");
             //  pemWriter.flush();
             // pemWriter.close();
@@ -184,7 +175,7 @@ public class Helper {
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(key);
 
-       signature.update(Helper.getBytes(message));
+       signature.update(message.getBytes());
     return signature.sign();
     }
     public static boolean verifySignature(PublicKey key, byte[] signatureToVerify) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
