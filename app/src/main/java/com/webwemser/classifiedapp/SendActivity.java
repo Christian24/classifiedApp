@@ -220,6 +220,7 @@ public class SendActivity extends AppCompatActivity {
             while (isRunning){
                 try{
                     Thread.sleep(2000);
+                    Log.i("Update Messages", " now");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
