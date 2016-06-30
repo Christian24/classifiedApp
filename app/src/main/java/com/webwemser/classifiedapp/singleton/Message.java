@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.webwemser.classifiedapp.ChatsActivity;
 import com.webwemser.classifiedapp.Helper;
 import com.webwemser.classifiedapp.MessageObject;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
@@ -100,18 +101,17 @@ private static Message instance;
                     pubkey_user = json.result.getString("pubkey_user");
 
                     if (mStatusCode==200 || mStatusCode==304){
-
-                     PublicKey publicKey   = Helper.getKeyFromPEM(pubkey_user);
+                    PublicKey publicKey   = Helper.getKeyFromPEM(pubkey_user);
                     String sig_recipient_data = new String(sender+content_string+iv_string+key_recipient_enc_string);
                     if( Helper.verifySignature(publicKey,sig_recipient_data.getBytes(),sig_recipient)) {
                         //Match
                         RSACipher rsaCipher = RSACipher.getInstance();
-                       byte[] key_recipient = rsaCipher.decrypt(Singleton.getSingleton().getPrivate_key(),key_recipient_enc);
+                        byte[] key_recipient = rsaCipher.decrypt(Singleton.getSingleton().getPrivate_key(),key_recipient_enc);
                         AESCBC aescbc = AESCBC.getInstance();
                         byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
                         MessageObject messageObject = new MessageObject(id,sender,new String(message));
                         addMessage(messageObject);
-                    }
+                        }
                     }
                 }
                 catch (Exception e){

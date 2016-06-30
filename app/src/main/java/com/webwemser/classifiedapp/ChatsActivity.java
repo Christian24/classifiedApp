@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -53,16 +54,22 @@ public class ChatsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showChats();
+    }
+
     public void startChat(View view) {
         if(username.getText().toString().length()>0 && !(username.getText().toString().equals(Singleton.getSingleton().getLogin()))){
-            login(username.getText().toString());
+            getPubKey(username.getText().toString());
         }
         else{
             Toast.makeText(getApplicationContext(), "Bitte richtigen Benutzernamen eintragen", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showChats(){
+    public void showChats(){
         for(String name: Message.getInstance().getConversations().keySet()){
             Log.i("Sender", name);
         }
@@ -81,14 +88,14 @@ public class ChatsActivity extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ChatsActivity.this, SendActivity.class);
-                intent.putExtra(KEY_POSITION, position);
-                startActivity(intent);
+                TextView txt = (TextView) list.findViewById(R.id.contact_name);
+                Log.i("Adapter Txt", txt.getText().toString());
+                getPubKey(txt.getText().toString());
         }
     });
     }
 
-    protected void login(final String userName) {
+    protected void getPubKey(final String userName) {
         Log.i("URL", Helper.URL + userName + "/pubkey");
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.URL + userName + "/pubkey", null, new Response.Listener<JSONObject>() {
             @Override
@@ -120,7 +127,7 @@ public class ChatsActivity extends AppCompatActivity {
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
                     if (mStatusCode==200 || mStatusCode==304){
-                        startChatActivity(json.result.getString("pubkey_user"));
+                        startChatActivity(json.result.getString("pubkey_user"), userName);
                     }
                     if(mStatusCode==404){
                         Toast.makeText(getApplicationContext(), "User existiert nicht", Toast.LENGTH_SHORT).show();
@@ -135,14 +142,13 @@ public class ChatsActivity extends AppCompatActivity {
         RequestSingleton.getInstance(getApplicationContext()).add(request);
     }
 
-    public void startChatActivity(final String pubkey){
+    public void startChatActivity(final String pubkey, final String name){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent(ChatsActivity.this, SendActivity.class);
-                intent.putExtra(USER, username.getText().toString());
+                intent.putExtra(USER, name);
                 intent.putExtra(PUBKEY, pubkey);
-                Log.i("PUBKEY", pubkey);
                 startActivity(intent);
             }
         });
