@@ -31,8 +31,11 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -197,7 +200,15 @@ public class SendActivity extends AppCompatActivity {
                         .setMessage("Möchten sie die Nachricht wirklich löschen?")
                         .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Delete.DeleteMessage(username);
+                                try {
+                                    Delete.DeleteMessage(username);
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (SignatureException e) {
+                                    e.printStackTrace();
+                                } catch (InvalidKeyException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         })
                         .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
