@@ -46,7 +46,7 @@ private static Message instance;
     }
 
     public void addMessage(Context context,JSONObject json) throws JSONException {
-        int timestamp = json.getInt("timestamp");
+        final int id = json.getInt("id");
         final String sender = json.getString("sender");
         final String content_string = json.getString("content_enc");
         final byte[] content_enc = Helper.base64Decoding(json.getString("content_enc"));
@@ -56,7 +56,7 @@ private static Message instance;
         final byte[] key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
         final String key_recipient_enc_string = json.getString("key_recipient_enc");
         final byte[] sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
-        byte[] sig_service = Helper.base64Decoding(json.getString("sig_service"));
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.getUriBuilder().appendPath(sender).appendPath("pubkey").toString(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
