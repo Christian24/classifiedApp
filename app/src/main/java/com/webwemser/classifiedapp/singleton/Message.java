@@ -25,7 +25,7 @@ import java.util.HashMap;
  */
 public class Message extends Application {
 private static Message instance;
-    protected HashMap<String,ArrayList<HashMap<String,String>>> conversations;
+    public HashMap<String,ArrayList<HashMap<String,String>>> conversations;
     private Message() {
         conversations = new HashMap<String,ArrayList<HashMap<String,String>>>();
     }

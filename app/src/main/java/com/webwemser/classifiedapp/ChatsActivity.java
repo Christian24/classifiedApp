@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.webwemser.classifiedapp.requests.GetLastMessageRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
+import com.webwemser.classifiedapp.singleton.Message;
 import com.webwemser.classifiedapp.singleton.Singleton;
 
 import org.json.JSONObject;
@@ -50,7 +51,6 @@ public class ChatsActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     public void startChat(View view) {
@@ -62,11 +62,12 @@ public class ChatsActivity extends AppCompatActivity {
         }
     }
 
-    private void showChats(ArrayList<String> names){
+    private void showChats(){
+        Log.i("Messages size", Message.getInstance().conversations.size()+"");
         ArrayList<HashMap<String, String>> chatList = new ArrayList<HashMap<String, String>>();
-        for(int i = 0; i < names.size(); i++){
+        for(String name: Message.getInstance().conversations.keySet()){
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put(CONTACT, names.get(i));
+            map.put(CONTACT, name);
             chatList.add(map);
         }
         list = (ListView)findViewById(R.id.list);
@@ -155,6 +156,7 @@ public class ChatsActivity extends AppCompatActivity {
                 catch (Exception e){
                     e.printStackTrace();
                 }
+                showChats();
 
             }
         });

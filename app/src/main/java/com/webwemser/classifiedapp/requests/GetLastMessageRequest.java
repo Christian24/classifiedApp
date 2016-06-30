@@ -1,5 +1,6 @@
 package com.webwemser.classifiedapp.requests;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 /**
  * Created by Christian on 27.06.2016.
  */
-public class GetLastMessageRequest {
+public class GetLastMessageRequest extends Activity {
 
     public void start(final Context context, final SwipeRefreshLayout swipe) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         String login = Singleton.getSingleton().getLogin();
@@ -40,8 +41,8 @@ public class GetLastMessageRequest {
         byte[] digitale_signatur = Helper.generateSignature(singleton.getPrivate_key(),signatur_String);
         String digitale_signaturString = Base64.encodeToString(digitale_signatur,Base64.DEFAULT);
 
-
         boolean ok = Helper.verifySignature(singleton.getPubkey(),signatur_String.getBytes(),digitale_signatur);
+
 
 
 
@@ -70,7 +71,12 @@ public class GetLastMessageRequest {
                         }
                     }
                 }
-                swipe.setRefreshing(false);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                });
             }
         })
         {
@@ -81,17 +87,20 @@ public class GetLastMessageRequest {
                 int mStatusCode = response.statusCode;
                 if(mStatusCode==200){
                     try {
-                        Message.getInstance().addMessage(context,json.result);
+                        Message.getInstance().addMessage(context, json.result);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                swipe.setRefreshing(false);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                });
                 return json;
             }
         };
         RequestSingleton.getInstance(context).add(request);
-
-
     }
 }
