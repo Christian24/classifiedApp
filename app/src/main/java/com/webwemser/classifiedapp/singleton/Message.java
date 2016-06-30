@@ -48,9 +48,13 @@ private static Message instance;
     public void addMessage(Context context,JSONObject json) throws JSONException {
         int timestamp = json.getInt("timestamp");
         final String sender = json.getString("sender");
+        final String content_string = json.getString("content_enc");
         final byte[] content_enc = Helper.base64Decoding(json.getString("content_enc"));
+
         final byte[] iv = Helper.base64Decoding(json.getString("iv"));
+        final String iv_string = json.getString("iv");
         final byte[] key_recipient_enc = Helper.base64Decoding(json.getString("key_recipient_enc"));
+        final String key_recipient_enc_string = json.getString("key_recipient_enc");
         final byte[] sig_recipient = Helper.base64Decoding(json.getString("sig_recipient"));
         byte[] sig_service = Helper.base64Decoding(json.getString("sig_service"));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Helper.getUriBuilder().appendPath(sender).appendPath("pubkey").toString(), null, new Response.Listener<JSONObject>() {
@@ -88,15 +92,15 @@ private static Message instance;
                     if (mStatusCode==200){
 
                      PublicKey publicKey   = Helper.getKeyFromPEM(pubkey_user);
-
-                   // if( Helper.verifySignature(publicKey,sig_recipient)) {
+                    String sig_recipient_data = new String(sender+content_string+iv_string+key_recipient_enc_string);
+                    if( Helper.verifySignature(publicKey,sig_recipient_data.getBytes(),sig_recipient)) {
                         //Match
                         RSACipher rsaCipher = RSACipher.getInstance();
                        byte[] key_recipient = rsaCipher.decrypt(publicKey,key_recipient_enc);
                         AESCBC aescbc = AESCBC.getInstance();
                         byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
                         addMessage(new String(message),sender);
-                  //  }
+                    }
                     }
                 }
                 catch (Exception e){
