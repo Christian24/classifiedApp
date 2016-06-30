@@ -195,9 +195,12 @@ public class SendActivity extends AppCompatActivity {
     private void deleteSpecificMessage(DialogInterface dialog) {
         String timestamp = Integer.toString(Helper.getTimestamp());
         String digitalSignature = "mock";
-        HashMap<String,String> params = new HashMap<String,String>();
-        params.put("login",username);
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("login", username);
         params.put("timestamp", timestamp);
+        params.put("digitale_signatur", digitalSignature);
         JSONObject json = new JSONObject(params);
+        Uri url = Helper.getUriBuilder().appendPath(username).appendPath("message").build();
+        // JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE,url.toString(),json,new Response.Listener<JSONObject>() {
     }
 }
