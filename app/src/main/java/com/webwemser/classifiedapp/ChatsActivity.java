@@ -40,7 +40,7 @@ public class ChatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats);
         username = (EditText)findViewById(R.id.username);
-        this.setTitle("Chats");
+        this.setTitle("Chats - " +Singleton.getSingleton().getLogin());
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         createSwipeLayout();
         lastMessage = new GetLastMessageRequest();
@@ -118,6 +118,9 @@ public class ChatsActivity extends AppCompatActivity {
                 try {
                     if (mStatusCode==200 || mStatusCode==304){
                         startChatActivity(json.result.getString("pubkey_user"));
+                    }
+                    if(mStatusCode==404){
+                        Toast.makeText(getApplicationContext(), "User existiert nicht", Toast.LENGTH_SHORT).show();
                     }
                 }
                 catch (Exception e){
