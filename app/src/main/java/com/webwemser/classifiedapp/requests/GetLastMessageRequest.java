@@ -42,14 +42,12 @@ public class GetLastMessageRequest {
 
 
         boolean ok = Helper.verifySignature(singleton.getPubkey(),signatur_String.getBytes(),digitale_signatur);
-        HashMap<String,String> map = new HashMap<>();
-        map.put("login",login);
-        map.put("timestamp",timestamp);
-        map.put("digitale_signatur",digitale_signaturString);
 
-        JSONObject json = new JSONObject(map);
-        Uri url = Helper.getUriBuilder().appendPath(login).appendPath("message").build();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,url.toString(),json,new Response.Listener<JSONObject>() {
+
+
+        Uri url = Helper.getUriBuilder().appendPath(login).appendPath("message").appendQueryParameter("login",login)
+                .appendQueryParameter("timestamp",timestamp).appendQueryParameter("digitale_signatur",digitale_signaturString).build();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,url.toString(),null,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.i("Log Response ", response.toString());
