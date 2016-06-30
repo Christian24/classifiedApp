@@ -2,8 +2,11 @@ package com.webwemser.classifiedapp.singleton;
 
 import android.app.Application;
 
+import org.spongycastle.jce.provider.BouncyCastleProvider;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import javax.crypto.BadPaddingException;
@@ -62,7 +65,7 @@ public class RSACipher extends Application {
 
     /**
      * Decrypt
-     * @param publicKey
+     * @param privateKey
      * @param data
      * @return
      * @throws InvalidKeyException
@@ -71,9 +74,9 @@ public class RSACipher extends Application {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-    public byte[] decrypt(PublicKey publicKey, byte[] data) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public byte[] decrypt(PrivateKey privateKey, byte[] data) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, NoSuchPaddingException {
         Cipher cipher = getCipher();
-        cipher.init(Cipher.DECRYPT_MODE, publicKey);
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(data);
     }
 

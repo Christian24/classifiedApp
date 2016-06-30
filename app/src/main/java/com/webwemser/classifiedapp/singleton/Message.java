@@ -106,7 +106,7 @@ private static Message instance;
                     if( Helper.verifySignature(publicKey,sig_recipient_data.getBytes(),sig_recipient)) {
                         //Match
                         RSACipher rsaCipher = RSACipher.getInstance();
-                       byte[] key_recipient = rsaCipher.decrypt(publicKey,key_recipient_enc);
+                       byte[] key_recipient = rsaCipher.decrypt(Singleton.getSingleton().getPrivate_key(),key_recipient_enc);
                         AESCBC aescbc = AESCBC.getInstance();
                         byte[] message = aescbc.decrypt(key_recipient,iv,content_enc);
                         MessageObject messageObject = new MessageObject(id,sender,new String(message));
