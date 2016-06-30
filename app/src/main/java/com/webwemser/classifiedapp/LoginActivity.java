@@ -94,9 +94,9 @@ public class LoginActivity extends AppCompatActivity {
                     byte[] salt_masterkey = Helper.base64Decoding( json.result.getString("salt_masterkey"));
 
                     instance.setSalt_masterkey(salt_masterkey);
-                    String pubkey_user = json.result.getString("pubkey_user");
-                    instance.setPubkey(Helper.generatePublicKey(Helper.getKeyFromPEM(pubkey_user)));
-                    Log.i("Pubkey_user", pubkey_user);
+                    byte[] pubkey_user =Helper.base64Decoding( json.result.getString("pubkey_user"));
+                    instance.setPubkey(Helper.generatePublicKey(pubkey_user));
+                   // Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
                     byte[] privkey = Helper.base64Decoding(privkey_user_enc);
                    // byte[] privkey = Helper.getBytes(privkey_user_string);

@@ -41,32 +41,9 @@ public class RSACipher extends Application {
        return Cipher.getInstance("RSA");
     }
 
-    /**
-     * Generates the key
-     * @param pem
-     * @return
-     * @throws InvalidKeySpecException
-     * @throws NoSuchAlgorithmException
-     */
-    public RSAPublicKey generateKey(String pem) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        return Helper.generatePublicKey( Helper.getKeyFromPEM(pem));
-    }
 
-    /**
-     * Encrypt data
-     * @param publicKey
-     * @param data
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws NoSuchPaddingException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
-     * @throws InvalidKeySpecException
-     */
-    public byte[] encrypt(String publicKey, byte[] data) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
-    return encrypt(generateKey(publicKey),data);
-    }
+
+
     /**
      * Encrypt
      * @param publicKey
@@ -84,21 +61,7 @@ public class RSACipher extends Application {
         return cipher.doFinal(data);
     }
 
-    /**
-     * Decrypt
-     * @param pem
-     * @param data
-     * @return
-     * @throws InvalidKeySpecException
-     * @throws NoSuchAlgorithmException
-     * @throws IllegalBlockSizeException
-     * @throws BadPaddingException
-     * @throws NoSuchPaddingException
-     * @throws InvalidKeyException
-     */
-    public byte[] decrypt(String pem,byte[] data) throws InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
-        return decrypt(generateKey(pem),data);
-    }
+
 
     /**
      * Decrypt
