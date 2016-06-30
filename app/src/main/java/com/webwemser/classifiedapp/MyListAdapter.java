@@ -20,7 +20,6 @@ public class MyListAdapter extends BaseAdapter {
     private ArrayList<HashMap<String, String>> data;
     private static LayoutInflater inflater=null;
 
-
     public MyListAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
         activity = a;
         data=d;
