@@ -91,19 +91,19 @@ public class LoginActivity extends AppCompatActivity {
                 Response<JSONObject> json = super.parseNetworkResponse(response);
                 try {
                     Singleton instance = Singleton.getSingleton();
-                    String salt_masterkey = Helper.base64Decoding( json.result.getString("salt_masterkey"));
-                    Log.i("Salt_Masterkey", salt_masterkey);
-                    instance.setSalt_masterkey(Helper.getBytes(salt_masterkey));
+                    byte[] salt_masterkey = Helper.base64Decoding( json.result.getString("salt_masterkey"));
+
+                    instance.setSalt_masterkey(salt_masterkey);
                     String pubkey_user = json.result.getString("pubkey_user");
                     instance.setPubkey(Helper.generatePublicKey(Helper.getKeyFromPEM(pubkey_user)));
                     Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
-                    byte[] privkey = Helper.base64Decoding(Helper.getBytes(privkey_user_enc));
+                    byte[] privkey = Helper.base64Decoding(privkey_user_enc);
                    // byte[] privkey = Helper.getBytes(privkey_user_string);
                     instance.setPrivate_key_enc(privkey);
                     byte[] passwordBytes = password.getBytes();
                     PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
-                    generator.init(passwordBytes,Helper.getBytes(salt_masterkey), 10000);
+                    generator.init(passwordBytes,salt_masterkey, 10000);
                     final byte[] masterkey = ((KeyParameter)generator.generateDerivedParameters(256)).getKey();
 
 
