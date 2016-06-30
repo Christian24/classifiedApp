@@ -176,7 +176,7 @@ public class SendActivity extends AppCompatActivity {
                         .setMessage("Möchten sie die Nachricht wirklich löschen?")
                         .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                deleteSpecificMessage();
+                                deleteSpecificMessage(dialog);
                             }
                         })
                         .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
@@ -192,9 +192,12 @@ public class SendActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteSpecificMessage() {
+    private void deleteSpecificMessage(DialogInterface dialog) {
+        String timestamp = Integer.toString(Helper.getTimestamp());
+        String digitalSignature = "mock";
         HashMap<String,String> params = new HashMap<String,String>();
         params.put("login",username);
+        params.put("timestamp", timestamp);
         JSONObject json = new JSONObject(params);
     }
 }
