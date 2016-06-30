@@ -96,26 +96,25 @@ public class LoginActivity extends AppCompatActivity {
                     instance.setSalt_masterkey(salt_masterkey);
                     String pubkey_user = json.result.getString("pubkey_user");
                     instance.setPubkey(Helper.getKeyFromPEM(pubkey_user));
-                   // Log.i("Pubkey_user", pubkey_user);
+                    // Log.i("Pubkey_user", pubkey_user);
                     String privkey_user_enc = json.result.getString("privkey_user_enc");
                     byte[] privkey = Helper.base64Decoding(privkey_user_enc);
-                   // byte[] privkey = Helper.getBytes(privkey_user_string);
+                    // byte[] privkey = Helper.getBytes(privkey_user_string);
                     instance.setPrivate_key_enc(privkey);
                     byte[] passwordBytes = password.getBytes();
                     PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
                     generator.init(passwordBytes,salt_masterkey, 10000);
                     final byte[] masterkey = ((KeyParameter)generator.generateDerivedParameters(256)).getKey();
 
-
                     String x = new String(masterkey, "UTF-8");
                     Log.i("Masterkey", x);
                     SecretKeySpec secretKeySpec = Helper.buildKey(masterkey);
 
                     AESECB aesecb = AESECB.getInstance();
-                   byte[] privateBytes = aesecb.decrypt(masterkey,privkey);
+                    byte[] privateBytes = aesecb.decrypt(masterkey,privkey);
 
                     PrivateKey privateKey = Helper.generatePrivateKey(privateBytes);
-                            instance.setPrivate_key(privateKey);
+                    instance.setPrivate_key(privateKey);
                     instance.setLogin(userName);
 
                     if(mStatusCode==200 || mStatusCode==304){

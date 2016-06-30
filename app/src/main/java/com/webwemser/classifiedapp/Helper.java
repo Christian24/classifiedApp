@@ -37,7 +37,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class Helper {
     public static final String URL = "https://webengserver.herokuapp.com/";
 
-
     public static SecretKeySpec buildKey(byte[] password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         Provider provider = new BouncyCastleProvider();
         MessageDigest digester = MessageDigest.getInstance("SHA-256", provider);
@@ -58,7 +57,6 @@ public class Helper {
     public static byte[] base64Decoding(String input) {
         return Base64.decode(input, Base64.DEFAULT);
     }
-
 
     private static final String ALLOWED_CHARACTERS = "0123456789qwertyuiopasdfghjklzxcvbnm";
 
@@ -98,7 +96,6 @@ public class Helper {
 
     public static PublicKey generatePublicKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory keyFactory = null;
-
         keyFactory = KeyFactory.getInstance("RSA");
 
         X509EncodedKeySpec spec = new X509EncodedKeySpec(key);
@@ -106,8 +103,6 @@ public class Helper {
     }
 
     public static PrivateKey generatePrivateKey(byte[] key) throws InvalidKeySpecException, NoSuchAlgorithmException {
-
-
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
         EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
@@ -115,11 +110,8 @@ public class Helper {
     }
 
     public static PublicKey getKeyFromPEM(String key) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-
         StringReader stringReader = new StringReader(key);
-
         PemReader pemReader = new PemReader(stringReader);
-
 
         PemObject obj = pemReader.readPemObject();
         pemReader.close();
@@ -138,7 +130,6 @@ public class Helper {
             Log.i("Caught exception:", e.getMessage());
             return "";
         }
-
         return pemStrWriter.toString();
     }
 

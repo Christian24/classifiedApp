@@ -61,7 +61,6 @@ public class RegisterActivity extends AppCompatActivity {
             PKCS5S2ParametersGenerator generator = new PKCS5S2ParametersGenerator(new SHA256Digest());
             generator.init(passwordBytes,bytes,10000);
 
-
             final byte[] masterkey = ((KeyParameter)  generator.generateDerivedParameters(256)).getKey();
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             rsa.initialize(2048);
@@ -70,7 +69,6 @@ public class RegisterActivity extends AppCompatActivity {
             PrivateKey privateKey = keys.getPrivate();
             Singleton.getSingleton().setPrivate_key(privateKey);
             PublicKey publicKey = keys.getPublic();
-
 
             try
             {
@@ -134,9 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
                         return super.parseNetworkResponse(response);
                     }
                 };
-
                 RequestSingleton.getInstance(getApplicationContext()).add(request);
-
             }catch (Exception e) {
                 Log.i("Log ", e.getMessage());
             }
