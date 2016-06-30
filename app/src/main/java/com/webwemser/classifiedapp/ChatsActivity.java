@@ -112,9 +112,8 @@ public class ChatsActivity extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView txt = (TextView) list.findViewById(R.id.contact_name);
-                Log.i("Adapter Txt", txt.getText().toString());
-                getPubKey(txt.getText().toString());
+                TextView text = (TextView) view.findViewById(R.id.contact_name);
+                getPubKey(text.getText().toString());
         }
     });
     }
@@ -210,11 +209,17 @@ public class ChatsActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            try{
+                                lastMessage.start(getApplicationContext(), new SwipeRefreshLayout(getApplicationContext()));
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
                             showChats();
                         }
                     });
                 }
-                catch (InterruptedException e){
+                catch (Exception e){
                     e.printStackTrace();
                 }
 

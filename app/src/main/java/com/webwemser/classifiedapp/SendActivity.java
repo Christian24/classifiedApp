@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.webwemser.classifiedapp.requests.GetLastMessageRequest;
 import com.webwemser.classifiedapp.requests.RequestSingleton;
 import com.webwemser.classifiedapp.singleton.AESCBC;
 import com.webwemser.classifiedapp.singleton.AESCBCResult;
@@ -40,6 +42,7 @@ public class SendActivity extends AppCompatActivity {
     private MyChatAdapter adapter;
     private ListView list;
     private String username, publicKey;
+    private GetLastMessageRequest lastMessage;
     private boolean isRunning;
 
     @Override
@@ -51,6 +54,7 @@ public class SendActivity extends AppCompatActivity {
         publicKey = getIntent().getStringExtra(ChatsActivity.PUBKEY);
         Log.i("Pubkey getIntent", publicKey);
         this.setTitle(username);
+        lastMessage = new GetLastMessageRequest();
         message.setHint("Message to " + username);
         showMessages();
         isRunning = true;
@@ -232,6 +236,12 @@ public class SendActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            try{
+                                lastMessage.start(getApplicationContext(), new SwipeRefreshLayout(getApplicationContext()));
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
                             showMessages();
                         }
                     });
